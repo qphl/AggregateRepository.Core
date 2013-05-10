@@ -1,17 +1,79 @@
-﻿using CR.AggregateRepository.Core;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using CR.AggregateRepository.Core;
+using CR.AggregateRepository.Core.Exceptions;
 
 namespace CR.AggregateRepository.Persistance.Memory
 {
     public class InMemoryAggregateRepository : IAggregateRepository
     {
-        public void Save(IAggregate aggregateToSave, int expectedAggregateVersion)
+        private readonly ConcurrentDictionary<string,List<object>> EventStore = new ConcurrentDictionary<string, List<object>>();
+        
+        public void Save(IAggregate aggregateToSave)
         {
-            throw new System.NotImplementedException();
+            var newEvents = aggregateToSave.GetUncommittedEvents().Cast<object>().ToList();
+            var originalVersion = aggregateToSave.Version - newEvents.Count;
+
+            List<object> theEvents;
+
+            if (originalVersion == 0)
+            {
+                if (!EventStore.TryAdd(aggregateToSave.Id, new List<object>()))
+                {
+                    throw new AggregateVersionException();
+                }
+            }
+
+            if (EventStore.TryGetValue(aggregateToSave.Id, out theEvents))
+            {
+                if(theEvents.Count != originalVersion)
+                    throw new AggregateVersionException();
+
+                theEvents.AddRange(newEvents);
+                aggregateToSave.ClearUncommittedEvents();
+            }
+            else
+            {
+               throw new AggregateNotFoundException();
+            }
+        }
+
+        public T GetAggregateFromRepository<T>(string aggregateId, int version) where T : IAggregate
+        {
+            if(version <= 0)
+                throw new ArgumentException("Version must be greater than 0");
+
+            List<object> theEvents;
+            if (EventStore.TryGetValue(aggregateId, out theEvents))
+            {
+                if (version != Int32.MaxValue && version > theEvents.Count)
+                    throw new AggregateVersionException();
+
+             //   return theEvents.Take(version);
+                return BuildAggregate<T>(theEvents.Take(version));
+            }
+            else
+            {
+                throw new AggregateNotFoundException();
+            }
+        }
+
+        private T BuildAggregate<T>(IEnumerable<object> events) where T : IAggregate
+        {
+            var instance =  (T)Activator.CreateInstance(typeof(T), true);
+            foreach (var @event in events)
+            {
+                instance.ApplyEvent(@event);
+            }
+            return instance;
         }
 
         public T GetAggregateFromRepository<T>(string aggregateId) where T : IAggregate
         {
-            throw new System.NotImplementedException();
+            return GetAggregateFromRepository<T>(aggregateId, Int32.MaxValue);
         }
     }
 }
+ 

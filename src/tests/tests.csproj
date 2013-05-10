@@ -45,12 +45,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AggregateRepositoryTestFixture.cs" />
+    <Compile Include="InMemoryAggregateRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestAggregate.cs" />
+    <Compile Include="TestEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.csproj">
       <Project>{41081B7F-0CF4-417A-A311-BE7A8F1D3D54}</Project>
       <Name>core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\persistance.memory\persistance.memory.csproj">
+      <Project>{A6949D48-4FC1-4E12-9256-D20016D4D2CE}</Project>
+      <Name>persistance.memory</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

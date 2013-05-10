@@ -3,6 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core\core.csproj", "{41081B7F-0CF4-417A-A311-BE7A8F1D3D54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "persistance.memory", "persistance.memory\persistance.memory.csproj", "{A6949D48-4FC1-4E12-9256-D20016D4D2CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{AF615296-59C3-4EAB-B0B4-6CD1B351FBE9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2593A6DB-BE56-480D-B875-8B8BF3D5EA06}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +24,14 @@ Global
 		{41081B7F-0CF4-417A-A311-BE7A8F1D3D54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41081B7F-0CF4-417A-A311-BE7A8F1D3D54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41081B7F-0CF4-417A-A311-BE7A8F1D3D54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6949D48-4FC1-4E12-9256-D20016D4D2CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6949D48-4FC1-4E12-9256-D20016D4D2CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6949D48-4FC1-4E12-9256-D20016D4D2CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6949D48-4FC1-4E12-9256-D20016D4D2CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF615296-59C3-4EAB-B0B4-6CD1B351FBE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF615296-59C3-4EAB-B0B4-6CD1B351FBE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF615296-59C3-4EAB-B0B4-6CD1B351FBE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF615296-59C3-4EAB-B0B4-6CD1B351FBE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
