@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\AggregateNotFoundException.cs" />
+    <Compile Include="Exceptions\AggregateVersionException.cs" />
     <Compile Include="IAggregateRepository.cs" />
     <Compile Include="IAggregate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
