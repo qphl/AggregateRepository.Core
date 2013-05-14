@@ -8,9 +8,16 @@ using CR.AggregateRepository.Core;
 
 namespace CR.AggregateRepository.Tests
 {
-    internal class TestAggregate : IAggregate
+    internal class TestAggregate : AggregateBase
     {
-        public object Id { get; private set; }
+
+        private object _id;
+
+        public override object Id
+        {
+            get { return _id; }
+        }
+
         public int Version { get; private set; }
 
         public List<Guid> eventsApplied = new List<Guid>();
@@ -34,29 +41,7 @@ namespace CR.AggregateRepository.Tests
 
         public void Apply(TestAggregateCreated e)
         {
-            Id = e.AggregateId;
-        }
-
-        public void RaiseEvent(object @event)
-        {
-            ApplyEvent(@event);
-            _changes.Add(@event);
-        }
-
-        public void ApplyEvent(object @event)
-        {
-            ((dynamic) this).Apply((dynamic) @event);
-            Version++;
-        }
-
-        public ICollection GetUncommittedEvents()
-        {
-            return _changes;
-        }
-
-        public void ClearUncommittedEvents()
-        {
-            _changes.Clear();
+            _id = e.AggregateId;
         }
 
         public void GenerateEvent(Guid eventId)

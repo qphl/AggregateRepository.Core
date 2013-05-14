@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CR.AggregateRepository.Core
+﻿namespace CR.AggregateRepository.Core
 {
     public interface IAggregateRepository
     {
