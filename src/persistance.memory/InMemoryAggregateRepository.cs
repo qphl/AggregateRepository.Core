@@ -9,7 +9,7 @@ namespace CR.AggregateRepository.Persistance.Memory
 {
     public class InMemoryAggregateRepository : IAggregateRepository
     {
-        private readonly ConcurrentDictionary<string,List<object>> EventStore = new ConcurrentDictionary<string, List<object>>();
+        private readonly ConcurrentDictionary<object,List<object>> EventStore = new ConcurrentDictionary<object, List<object>>();
         
         public void Save(IAggregate aggregateToSave)
         {
@@ -40,7 +40,7 @@ namespace CR.AggregateRepository.Persistance.Memory
             }
         }
 
-        public T GetAggregateFromRepository<T>(string aggregateId, int version) where T : IAggregate
+        public T GetAggregateFromRepository<T>(object aggregateId, int version) where T : IAggregate
         {
             if(version <= 0)
                 throw new ArgumentException("Version must be greater than 0");
@@ -70,7 +70,7 @@ namespace CR.AggregateRepository.Persistance.Memory
             return instance;
         }
 
-        public T GetAggregateFromRepository<T>(string aggregateId) where T : IAggregate
+        public T GetAggregateFromRepository<T>(object aggregateId) where T : IAggregate
         {
             return GetAggregateFromRepository<T>(aggregateId, Int32.MaxValue);
         }

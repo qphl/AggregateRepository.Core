@@ -10,7 +10,7 @@ namespace CR.AggregateRepository.Tests
 {
     internal class TestAggregate : IAggregate
     {
-        public String Id { get; private set; }
+        public object Id { get; private set; }
         public int Version { get; private set; }
 
         public List<Guid> eventsApplied = new List<Guid>();
@@ -61,7 +61,7 @@ namespace CR.AggregateRepository.Tests
 
         public void GenerateEvent(Guid eventId)
         {
-            RaiseEvent(new TestEvent(Id, eventId));
+            RaiseEvent(new TestEvent(eventId));
         }
 
     }
