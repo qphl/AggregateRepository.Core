@@ -9,8 +9,21 @@ namespace CR.AggregateRepository.Persistance.Memory
 {
     public class InMemoryAggregateRepository : IAggregateRepository
     {
-        private readonly ConcurrentDictionary<object,List<object>> EventStore = new ConcurrentDictionary<object, List<object>>();
+        public readonly ConcurrentDictionary<object,List<object>> EventStore = new ConcurrentDictionary<object, List<object>>();
         
+        public InMemoryAggregateRepository()
+        {
+            
+        }
+
+        public InMemoryAggregateRepository(Dictionary<object, List<object>> initialEvents)
+        {
+            foreach (var item in initialEvents)
+            {
+                EventStore.TryAdd(item.Key, item.Value);
+            }
+        }
+
         public void Save(IAggregate aggregateToSave)
         {
             var newEvents = aggregateToSave.GetUncommittedEvents().Cast<object>().ToList();
