@@ -8,5 +8,10 @@ namespace CR.AggregateRepository.Tests
         {
             _repoUnderTest = new InMemoryAggregateRepository();
         }
+
+        protected override void CleanUpRepository()
+        {
+            
+        }
     }
 }

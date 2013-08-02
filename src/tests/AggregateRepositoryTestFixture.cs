@@ -16,6 +16,7 @@ namespace CR.AggregateRepository.Tests
         private List<Guid> _storedEvents = new List<Guid>();
 
         protected abstract void InitRepository();
+        protected abstract void CleanUpRepository();
        
         [SetUp]
         public void SetUp()
@@ -23,6 +24,12 @@ namespace CR.AggregateRepository.Tests
             InitRepository();
             _aggregateIdUnderTest = Guid.NewGuid().ToString();
             _storedEvents = new List<Guid>();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            CleanUpRepository();
         }
 
         [Test]

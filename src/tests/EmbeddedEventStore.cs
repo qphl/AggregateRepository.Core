@@ -43,6 +43,16 @@ namespace CR.AggregateRepository.Tests
             started.WaitOne();
         }
 
+        public void Stop()
+        {
+            var stopped = new ManualResetEvent(false);
+            _node.MainBus.Subscribe(new AdHocHandler<SystemMessage.BecomeShutdown>(m => stopped.Set()));
+
+            if (_node != null)
+                _node.Stop(false);
+            stopped.WaitOne();
+        }
+
         private SingleVNodeSettings Settings()
         {
             return new SingleVNodeSettings(TcpEndPoint, null, HttpEndPoint, new string[] { string.Format("http://{0}:{1}/", HttpEndPoint.Address, HttpEndPoint.Port) }, false, null, Opts.WorkerThreadsDefault,

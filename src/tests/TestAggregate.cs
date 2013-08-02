@@ -18,8 +18,6 @@ namespace CR.AggregateRepository.Tests
             get { return _id; }
         }
 
-        public int Version { get; private set; }
-
         public List<Guid> eventsApplied = new List<Guid>();
 
         private readonly List<Object> _changes = new List<Object>();

@@ -8,25 +8,23 @@ namespace CR.AggregateRepository.Tests
 {
     public class EventStoreAggregateRepositoryTests : AggregateRepositoryTestFixture
     {
+        private IEventStoreConnection _connection;
+        private EmbeddedEventStore _eventStore;
+
         protected override void InitRepository()
         {
-            var db = new EmbeddedEventStore(GetTemporaryDirectory(), 11113, 12113);
-            db.Start();
+            _eventStore = new EmbeddedEventStore(GetTemporaryDirectory(), 11113, 12113);
+            _eventStore.Start();
 
-            var testEventStoreConnection = EventStoreConnection.Create(db.TcpEndPoint);
-            testEventStoreConnection.Connect();
+            _connection = EventStoreConnection.Create(_eventStore.TcpEndPoint);
+            _connection.Connect();
+            _repoUnderTest = new EventStoreAggregateRepository(_connection);
+        }
 
-            var events = new List<EventData>();
-            for (int i = 0; i < 100; i++)
-            {
-                var e = new EventData(Guid.NewGuid(), "woftamevent", false, new byte[]{}, new byte[]{});
-                events.Add(e);
-            }
-
-            testEventStoreConnection.AppendToStream("woftamStream", ExpectedVersion.Any, events);
-            var slice = testEventStoreConnection.ReadStreamEventsForward("woftamStream", 0, 1000, false);
-
-            _repoUnderTest = new EventStoreAggregateRepository(testEventStoreConnection);
+        protected override void CleanUpRepository()
+        {
+            _connection.Close();
+            _eventStore.Stop();
         }
 
         private string GetTemporaryDirectory()
