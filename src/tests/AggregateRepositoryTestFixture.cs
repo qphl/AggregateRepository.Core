@@ -150,6 +150,25 @@ namespace CR.AggregateRepository.Tests
         }
 
         [Test]
+        public void Saving_new_events_to_an_existing_aggregate_should_correctly_persist_events()
+        {
+            var aggregate = new TestAggregate(_aggregateIdUnderTest);
+            _repoUnderTest.Save(aggregate);
+
+            //retrieve it
+            _retrievedAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
+
+            var eventId = Guid.NewGuid();
+            _retrievedAggregate.GenerateEvent(eventId);
+            _repoUnderTest.Save(_retrievedAggregate);
+
+            var actualAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
+            Assert.AreEqual(1, actualAggregate.eventsApplied.Count);
+            Assert.AreEqual(_aggregateIdUnderTest, actualAggregate.Id);
+            Assert.AreEqual(eventId, actualAggregate.eventsApplied[0]);
+        }
+
+        [Test]
         public void Saving_an_aggregate_with_expected_version_less_than_the_actual_version_should_throw_a_concurrency_exception()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);

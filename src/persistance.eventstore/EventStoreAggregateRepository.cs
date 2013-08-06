@@ -28,7 +28,7 @@ namespace CR.AggregateRepository.Persistance.EventStore
 
             //TODO: Replace this with some proper stream naming strategy
             var streamName = StreamNameForAggregateId(aggregateToSave.Id);
-            var expectedVersion = originalVersion == 0 ? ExpectedVersion.NoStream : originalVersion;
+            var expectedVersion = originalVersion == 0 ? ExpectedVersion.NoStream : originalVersion - 1;
             var eventsToSave = newEvents.Select(e => ToEventData(Guid.NewGuid(), e)).ToList();
 
             try
