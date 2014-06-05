@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CR.AggregateRepository.Core;
@@ -26,7 +25,6 @@ namespace CR.AggregateRepository.Persistance.EventStore
             var newEvents = aggregateToSave.GetUncommittedEvents().Cast<object>().ToList();
             var originalVersion = aggregateToSave.Version - newEvents.Count;
 
-            //TODO: Replace this with some proper stream naming strategy
             var streamName = StreamNameForAggregateId(aggregateToSave.Id);
             var expectedVersion = originalVersion == 0 ? ExpectedVersion.NoStream : originalVersion - 1;
             var eventsToSave = newEvents.Select(e => ToEventData(Guid.NewGuid(), e)).ToList();
@@ -48,13 +46,9 @@ namespace CR.AggregateRepository.Persistance.EventStore
 
                 throw;
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
 
-        public T GetAggregateFromRepository<T>(object aggregateId, int version) where T : IAggregate
+        public T GetAggregateFromRepository<T>(object aggregateId, int version = int.MaxValue) where T : IAggregate
         {
             if (version <= 0)
                 throw new InvalidOperationException("Cannot get version <= 0");
@@ -88,7 +82,7 @@ namespace CR.AggregateRepository.Persistance.EventStore
 
             } while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
 
-            //if there are more events, throw exception
+            //if version is greater than number of events, throw exception
             if(eventsCount < version && version != int.MaxValue)
                 throw new AggregateVersionException("version is higher than actual version");
 
@@ -99,11 +93,6 @@ namespace CR.AggregateRepository.Persistance.EventStore
         {
             var eventClrTypeName = JObject.Parse(Encoding.UTF8.GetString(metadata)).Property("ClrType").Value;
             return JsonConvert.DeserializeObject(Encoding.UTF8.GetString(data), Type.GetType((string)eventClrTypeName));
-        }
-
-        public T GetAggregateFromRepository<T>(object aggregateId) where T : IAggregate
-        {
-            return GetAggregateFromRepository<T>(aggregateId, int.MaxValue);
         }
 
         private static string StreamNameForAggregateId(object id)

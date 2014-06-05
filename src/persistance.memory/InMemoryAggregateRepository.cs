@@ -53,7 +53,7 @@ namespace CR.AggregateRepository.Persistance.Memory
             }
         }
 
-        public T GetAggregateFromRepository<T>(object aggregateId, int version) where T : IAggregate
+        public T GetAggregateFromRepository<T>(object aggregateId, int version = int.MaxValue) where T : IAggregate
         {
             if(version <= 0)
                 throw new ArgumentException("Version must be greater than 0");
@@ -81,11 +81,6 @@ namespace CR.AggregateRepository.Persistance.Memory
                 instance.ApplyEvent(@event);
             }
             return instance;
-        }
-
-        public T GetAggregateFromRepository<T>(object aggregateId) where T : IAggregate
-        {
-            return GetAggregateFromRepository<T>(aggregateId, Int32.MaxValue);
         }
     }
 }
