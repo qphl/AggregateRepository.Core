@@ -1,0 +1,20 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Rich Knight,Jon Bradford</authors>
+    <owners>Rich Knight,Jon Bradford</owners>
+    <licenseUrl>https://raw.githubusercontent.com/cognisant/cr-aggregaterepository/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/cognisant/cr-aggregaterepository</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/cognisant/cr-aggregaterepository/master/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>In memory persistance for CR AggregateRepository</description>
+    <releaseNotes>Initial Version</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <dependencies>
+      <dependency id="CR.AggregateRepository.Core" version="1.0.0" />
+    </dependencies>
+  </metadata>
+</package>
