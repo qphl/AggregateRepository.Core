@@ -31,7 +31,7 @@ namespace CR.AggregateRepository.Persistance.EventStore
 
             try
             {
-                _connection.AppendToStream(streamName, expectedVersion, eventsToSave);
+                _connection.AppendToStreamAsync(streamName, expectedVersion, eventsToSave).Wait();
                 aggregateToSave.ClearUncommittedEvents();
             }
             catch (StreamDeletedException ex)
@@ -65,7 +65,7 @@ namespace CR.AggregateRepository.Persistance.EventStore
                                     ? ReadPageSize
                                     : version - sliceStart + 1;
 
-                currentSlice = _connection.ReadStreamEventsForward(streamName, sliceStart, sliceCount, false);
+                currentSlice = _connection.ReadStreamEventsForwardAsync(streamName, sliceStart, sliceCount, false).Result;
 
                 if (currentSlice.Status == SliceReadStatus.StreamNotFound)
                     throw new AggregateNotFoundException();

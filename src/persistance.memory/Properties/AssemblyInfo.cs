@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("persistance.memory")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("CR AggregateRepository In Memory Persistance")]
+[assembly: AssemblyDescription("In memory persistance for CR AggregateRepository")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("persistance.memory")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyCompany("Cognisant")]
+[assembly: AssemblyProduct("CR.AggregateRepository.Persistance.Memory")]
+[assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

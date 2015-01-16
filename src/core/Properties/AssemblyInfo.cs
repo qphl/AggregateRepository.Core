@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("core")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("CR Aggregate Repository Core")]
+[assembly: AssemblyDescription("Common library for saving and rebuilding of aggregates from event streams")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("core")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyCompany("Cognisant")]
+[assembly: AssemblyProduct("CR.AggregateRepository.Core")]
+[assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
