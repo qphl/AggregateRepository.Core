@@ -23,9 +23,6 @@ if not "%errorlevel%"=="0" goto failure
 cmd /c %nuget% pack "src\persistance.eventstore\persistance.eventstore.csproj" -symbols -o Build -p Configuration=%config%
 if not "%errorlevel%"=="0" goto failure
 
-cmd /c %nuget% pack "src\persistance.applicationstate\persistance.applicationstate.csproj" -symbols -o Build -p Configuration=%config%
-if not "%errorlevel%"=="0" goto failure
-
 :success
 exit 0
 

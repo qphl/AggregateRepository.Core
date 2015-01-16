@@ -17,7 +17,7 @@ namespace CR.AggregateRepository.Tests
             _eventStore.Start();
 
             _connection = EventStoreConnection.Create(_eventStore.TcpEndPoint);
-            _connection.Connect();
+            _connection.ConnectAsync().Wait();
             _repoUnderTest = new EventStoreAggregateRepository(_connection);
         }
 
