@@ -14,7 +14,7 @@
     <releaseNotes>Initial Version</releaseNotes>
     <copyright>Copyright 2015</copyright>
     <dependencies>
-      <dependency id="CR.AggregateRepository.Core" version="1.0.0" />
+      <dependency id="CR.AggregateRepository.Core" version="1.0.1" />
     </dependencies>
   </metadata>
 </package>
