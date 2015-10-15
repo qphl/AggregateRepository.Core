@@ -35,9 +35,9 @@
     <Reference Include="EventStore.BufferManagement">
       <HintPath>..\..\lib\EventStore.BufferManagement.dll</HintPath>
     </Reference>
-    <Reference Include="EventStore.ClientAPI, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EventStore.Client.3.0.1\lib\net40\EventStore.ClientAPI.dll</HintPath>
+    <Reference Include="EventStore.ClientAPI, Version=3.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EventStore.Client.3.3.1\lib\net40\EventStore.ClientAPI.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EventStore.Common">
       <HintPath>..\..\lib\EventStore.Common.dll</HintPath>
@@ -54,8 +54,9 @@
     <Reference Include="NLog">
       <HintPath>..\..\lib\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\..\lib\protobuf-net.dll</HintPath>
