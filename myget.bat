@@ -10,7 +10,7 @@ if not "%errorlevel%"=="0" goto failure
 
 REM Unit tests
 call %nuget% install NUnit.Runners -Version 2.6.2 -OutputDirectory packages
-packages\NUnit.Runners.2.6.4\tools\nunit-console.exe /config:%config% /framework:net-4.5 src\tests\bin\%config%\CR.AggregateRepository.Tests.dll
+packages\NUnit.Runners.2.6.2\tools\nunit-console.exe /config:%config% /framework:net-4.5 src\tests\bin\%config%\CR.AggregateRepository.Tests.dll
 if not "%errorlevel%"=="0" goto failure
 
 REM Package
