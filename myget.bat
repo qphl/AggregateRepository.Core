@@ -9,7 +9,7 @@ call "%msbuild%" src\cr-aggregaterepository.sln /p:Configuration="%config%" /m /
 if not "%errorlevel%"=="0" goto failure
 
 REM Unit tests
-"%GallioEcho%" src\tests\bin\%config%\CR.AggregateRepository.Tests.dll
+"%nunit%" src\tests\bin\%config%\CR.AggregateRepository.Tests.dll
 if not "%errorlevel%"=="0" goto failure
 
 REM Package
