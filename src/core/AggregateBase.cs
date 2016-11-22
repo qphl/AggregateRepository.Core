@@ -11,7 +11,17 @@ namespace CR.AggregateRepository.Core
         public int Version { get; private set; }
 
         private readonly List<Object> _changes = new List<Object>();
-        
+
+        private EventMap _map;
+        protected abstract EventMap Map { get; }
+
+        public AggregateBase()
+        {
+            _map = Map;
+        }
+
+        protected static Action<object> Noop = e => { };
+
         protected void RaiseEvent(object @event)
         {
             ApplyEvent(@event);
@@ -20,8 +30,19 @@ namespace CR.AggregateRepository.Core
 
         public void ApplyEvent(object @event)
         {
-            this.AsDynamic().Apply(@event);
-            Version++;
+            Action<object> handler;
+            if (_map.TryGetValue(@event.GetType(), out handler))
+            {
+                handler(@event);
+                Version++;
+            }
+            else
+            {
+                throw new InvalidOperationException(
+                    string.Format("{0} can not be applied to {1}. No appropriate mapping is registered",
+                        @event.GetType().Name,
+                        GetType().Name));
+            }
         }
 
         public ICollection GetUncommittedEvents()

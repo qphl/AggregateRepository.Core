@@ -6,11 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using CR.AggregateRepository.Core;
 
+
+
 namespace CR.AggregateRepository.Tests
 {
     internal class TestAggregate : AggregateBase
     {
-
         private object _id;
 
         public override object Id
@@ -27,10 +28,13 @@ namespace CR.AggregateRepository.Tests
             RaiseEvent(new TestAggregateCreated(aggregateId));
         }
 
-        private TestAggregate()
+        private TestAggregate() { }
+
+        protected override EventMap Map => new EventMap
         {
-            
-        }
+            [typeof(TestEvent)] = e => Apply((TestEvent) e),
+            [typeof(TestAggregateCreated)] = e => Apply((TestAggregateCreated) e)
+        };
 
         public void Apply(TestEvent e)
         {

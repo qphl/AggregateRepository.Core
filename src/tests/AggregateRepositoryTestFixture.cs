@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using CR.AggregateRepository.Core;
 using CR.AggregateRepository.Core.Exceptions;
 using NUnit.Framework;
@@ -17,7 +18,7 @@ namespace CR.AggregateRepository.Tests
 
         protected abstract void InitRepository();
         protected abstract void CleanUpRepository();
-       
+
         [SetUp]
         public void SetUp()
         {
@@ -35,7 +36,8 @@ namespace CR.AggregateRepository.Tests
         [Test]
         public void Retreiving_an_aggregate_from_an_empty_eventstore_should_throw_an_exception()
         {
-            Assert.Throws<AggregateNotFoundException>(() => _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest));
+            Assert.Throws<AggregateNotFoundException>(
+                () => _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest));
         }
 
         [Test]
@@ -53,7 +55,8 @@ namespace CR.AggregateRepository.Tests
 
             _repoUnderTest.Save(aggregate);
 
-            Assert.Throws<AggregateNotFoundException>(() => _repoUnderTest.GetAggregateFromRepository<TestAggregate>(Guid.NewGuid().ToString()));
+            Assert.Throws<AggregateNotFoundException>(
+                () => _repoUnderTest.GetAggregateFromRepository<TestAggregate>(Guid.NewGuid().ToString()));
         }
 
         [Test]
@@ -107,7 +110,7 @@ namespace CR.AggregateRepository.Tests
 
             _repoUnderTest.Save(aggregate);
 
-            _retrievedAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest,6);
+            _retrievedAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 6);
 
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
 
@@ -117,7 +120,9 @@ namespace CR.AggregateRepository.Tests
         }
 
         [Test]
-        public void Retrieving_an_aggregate_with_events_reconstructs_the_entity_correctly_when_the_event_store_contains_multiple_aggregates()
+        public void
+            Retrieving_an_aggregate_with_events_reconstructs_the_entity_correctly_when_the_event_store_contains_multiple_aggregates
+            ()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
 
@@ -169,7 +174,8 @@ namespace CR.AggregateRepository.Tests
         }
 
         [Test]
-        public void Saving_an_aggregate_with_expected_version_less_than_the_actual_version_should_throw_a_concurrency_exception()
+        public void
+            Saving_an_aggregate_with_expected_version_less_than_the_actual_version_should_throw_a_concurrency_exception()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
 
@@ -183,7 +189,7 @@ namespace CR.AggregateRepository.Tests
             _repoUnderTest.Save(aggregate);
 
             //retrieve it
-            _retrievedAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest,3);
+            _retrievedAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 3);
 
             //even more events
 
@@ -194,7 +200,8 @@ namespace CR.AggregateRepository.Tests
                 _retrievedAggregate.GenerateEvent(eventId);
             }
 
-            Assert.Throws<AggregateVersionException>(() => _repoUnderTest.Save(_retrievedAggregate)); //this version will be less than actual
+            Assert.Throws<AggregateVersionException>(() => _repoUnderTest.Save(_retrievedAggregate));
+                //this version will be less than actual
 
         }
 
@@ -215,7 +222,8 @@ namespace CR.AggregateRepository.Tests
             _repoUnderTest.Save(aggregate);
 
             //retrieve it
-            Assert.Throws<AggregateVersionException>(() => _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 10));
+            Assert.Throws<AggregateVersionException>(
+                () => _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 10));
         }
 
     }
