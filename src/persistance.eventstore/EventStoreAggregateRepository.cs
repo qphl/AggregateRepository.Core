@@ -56,7 +56,7 @@ namespace CR.AggregateRepository.Persistance.EventStore
             var streamName = StreamNameForAggregateId(aggregateId);
             var aggregate = (T)Activator.CreateInstance(typeof(T), true);
 
-            var sliceStart = 0;
+            long sliceStart = 0;
             var eventsCount = 0;            
             StreamEventsSlice currentSlice;
             do
@@ -65,7 +65,7 @@ namespace CR.AggregateRepository.Persistance.EventStore
                                     ? ReadPageSize
                                     : version - sliceStart + 1;
 
-                currentSlice = _connection.ReadStreamEventsForwardAsync(streamName, sliceStart, sliceCount, false).Result;
+                currentSlice = _connection.ReadStreamEventsForwardAsync(streamName, sliceStart, (int)sliceCount, false).Result;
 
                 if (currentSlice.Status == SliceReadStatus.StreamNotFound)
                     throw new AggregateNotFoundException();
@@ -78,7 +78,7 @@ namespace CR.AggregateRepository.Persistance.EventStore
                 foreach (var evnt in currentSlice.Events)
                     aggregate.ApplyEvent(DeserializeEvent(evnt.OriginalEvent.Metadata, evnt.OriginalEvent.Data));
 
-                eventsCount += currentSlice.Events.Count();
+                eventsCount += currentSlice.Events.Length;
 
             } while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
 

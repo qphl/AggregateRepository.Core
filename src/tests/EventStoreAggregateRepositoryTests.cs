@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using CR.AggregateRepository.Persistance.EventStore;
+﻿using CR.AggregateRepository.Persistance.EventStore;
 using EventStore.ClientAPI;
+using EventStore.ClientAPI.Embedded;
 
 namespace CR.AggregateRepository.Tests
 {
@@ -13,10 +11,10 @@ namespace CR.AggregateRepository.Tests
 
         protected override void InitRepository()
         {
-            _eventStore = new EmbeddedEventStore(GetTemporaryDirectory(), 11113, 12113);
+            _eventStore = new EmbeddedEventStore(11113, 12113);
             _eventStore.Start();
 
-            _connection = EventStoreConnection.Create(_eventStore.TcpEndPoint);
+            _connection = EmbeddedEventStoreConnection.Create(_eventStore.Node);
             _connection.ConnectAsync().Wait();
             _repoUnderTest = new EventStoreAggregateRepository(_connection);
         }
@@ -25,13 +23,6 @@ namespace CR.AggregateRepository.Tests
         {
             _connection.Close();
             _eventStore.Stop();
-        }
-
-        private string GetTemporaryDirectory()
-        {
-            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(tempDirectory);
-            return tempDirectory;
         }
     }
 }

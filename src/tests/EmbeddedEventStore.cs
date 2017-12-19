@@ -1,78 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using EventStore.Common.Log;
+﻿using System.Threading;
+using EventStore.ClientAPI.Embedded;
 using EventStore.Core;
 using EventStore.Core.Bus;
 using EventStore.Core.Messages;
 using EventStore.Core.Services.Monitoring;
-using EventStore.Core.Settings;
-using EventStore.Core.TransactionLog.Checkpoint;
-using EventStore.Core.TransactionLog.Chunks;
-using EventStore.Core.TransactionLog.FileNamingStrategy;
-using EventStore.Core.Util;
 
 namespace CR.AggregateRepository.Tests
 {
     public class EmbeddedEventStore
     {
-        public readonly IPEndPoint TcpEndPoint;
-        public readonly IPEndPoint HttpEndPoint;
+        public ClusterVNode Node { get; private set; }
 
-        private string TfChunkFolderPath { get; set; }
-        private SingleVNode _node { get; set; }
+        public readonly int TcpEndPoint;
+        public readonly int HttpEndPoint;
 
-        public EmbeddedEventStore(string tfChunkFolderPath, int tcpPort, int httpPort)
+        public EmbeddedEventStore(int tcpPort, int httpPort)
         {
-            TcpEndPoint = new IPEndPoint(IPAddress.Loopback, tcpPort);
-            HttpEndPoint = new IPEndPoint(IPAddress.Loopback, httpPort);
-            TfChunkFolderPath = tfChunkFolderPath;
+            TcpEndPoint = tcpPort;
+            HttpEndPoint = httpPort;
         }
 
         public void Start()
         {
-            _node = new SingleVNode(InitDb(), Settings(), false, 0xf4240, new ISubsystem[0]);
+            Node = EmbeddedVNodeBuilder.AsSingleNode().RunInMemory()
+                .AdvertiseExternalTCPPortAs(TcpEndPoint)
+                .AdvertiseExternalHttpPortAs(HttpEndPoint)
+                .AddExternalHttpPrefix($"http://127.0.0.1:{HttpEndPoint}/").
+                WithStatsStorage(StatsStorage.None).Build();
             var started = new ManualResetEvent(false);
-            _node.MainBus.Subscribe(new AdHocHandler<SystemMessage.BecomeMaster>(m => started.Set()));
-            _node.Start();
+            Node.MainBus.Subscribe(new AdHocHandler<SystemMessage.BecomeMaster>(m => started.Set()));
+            Node.Start();
             started.WaitOne();
         }
 
         public void Stop()
         {
             var stopped = new ManualResetEvent(false);
-            _node.MainBus.Subscribe(new AdHocHandler<SystemMessage.BecomeShutdown>(m => stopped.Set()));
+            Node.MainBus.Subscribe(new AdHocHandler<SystemMessage.BecomeShutdown>(m => stopped.Set()));
 
-            if (_node != null)
-                _node.Stop(false);
+            Node?.Stop();
             stopped.WaitOne();
         }
-
-        private SingleVNodeSettings Settings()
-        {
-            return new SingleVNodeSettings(TcpEndPoint, null, HttpEndPoint, new string[] { string.Format("http://{0}:{1}/", HttpEndPoint.Address, HttpEndPoint.Port) }, false, null, Opts.WorkerThreadsDefault,
-                                           Opts.MinFlushDelayMsDefault,
-                                           TimeSpan.FromMilliseconds(Opts.PrepareTimeoutMsDefault),
-                                           TimeSpan.FromMilliseconds(Opts.CommitTimeoutMsDefault),
-                                           TimeSpan.FromMilliseconds(Opts.StatsPeriodDefault), StatsStorage.None);
-        }
-
-        private TFChunkDb InitDb()
-        {
-            return new TFChunkDb(new TFChunkDbConfig(TfChunkFolderPath,
-                                                    new VersionedPatternFileNamingStrategy(TfChunkFolderPath, "chunk-"),
-                                                    1024,
-                                                    0,
-                                                    new InMemoryCheckpoint(), 
-                                                    new InMemoryCheckpoint(),
-                                                    new InMemoryCheckpoint(-1),
-                                                    new InMemoryCheckpoint(-1)));
-        }
-
     }
 }
