@@ -19,7 +19,7 @@ namespace CR.AggregateRepository.Tests
     /// horrible reflection field setting and System.Runtime.Serialization.FormatterServices.GetUninitializedObject
     /// to create instances of objects with only internal constructors and set their readonly fields.
     /// </summary>
-    public class ConnectionTranslator : IEventStoreConnection
+    internal class ConnectionTranslator : IEventStoreConnection
     {
         private readonly EventStoreNetFrameworkClient::EventStore.ClientAPI.IEventStoreConnection _connection;
 
