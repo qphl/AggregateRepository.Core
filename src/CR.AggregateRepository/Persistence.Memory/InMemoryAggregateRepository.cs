@@ -5,7 +5,7 @@ using System.Linq;
 using CR.AggregateRepository.Core;
 using CR.AggregateRepository.Core.Exceptions;
 
-namespace CR.AggregateRepository.Persistance.Memory
+namespace CR.AggregateRepository.Persistence.Memory
 {
     public class InMemoryAggregateRepository : IAggregateRepository
     {

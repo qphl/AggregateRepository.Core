@@ -1,4 +1,4 @@
-﻿using CR.AggregateRepository.Persistance.Memory;
+﻿using CR.AggregateRepository.Persistence.Memory;
 
 namespace CR.AggregateRepository.Tests
 {

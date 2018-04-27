@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using CR.AggregateRepository.Core;
 
 namespace CR.AggregateRepository.Tests
 {

@@ -8,7 +8,7 @@ using EventStore.ClientAPI.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace CR.AggregateRepository.Persistance.EventStore
+namespace CR.AggregateRepository.Persistence.EventStore
 {
     public class EventStoreAggregateRepository : IAggregateRepository
     {
