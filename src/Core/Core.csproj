@@ -4,6 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>CR.AggregateRepository.Core</AssemblyName>
     <RootNamespace>CR.AggregateRepository.Core</RootNamespace>
+    <Copyright>Cognisant 2018</Copyright>
+    <PackageIconUrl>https://github.com/cognisant/cr-aggregaterepository/blob/master/logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/cognisant/cr-aggregaterepository</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cognisant/cr-aggregaterepository</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/cognisant/cr-aggregaterepository/blob/master/LICENSE</PackageLicenseUrl>
+    <Description>Common Library for saving and rebuilding objects from event streams.</Description>
+    <PackageTags>Event Sourcing, Aggregate Repository, Cognisant</PackageTags>
+    <Company>Cognisant</Company>
+    <Authors>Cognisant</Authors>
   </PropertyGroup>
 
 </Project>
