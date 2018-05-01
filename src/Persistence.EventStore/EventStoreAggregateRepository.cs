@@ -1,25 +1,38 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using CR.AggregateRepository.Core;
-using CR.AggregateRepository.Core.Exceptions;
-using EventStore.ClientAPI;
-using EventStore.ClientAPI.Exceptions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿// <copyright file="EventStoreAggregateRepository.cs" company="Cognisant">
+// Copyright (c) Cognisant. All rights reserved.
+// </copyright>
 
 namespace CR.AggregateRepository.Persistence.EventStore
 {
+    using System;
+    using System.Linq;
+    using System.Text;
+    using Core;
+    using Core.Exceptions;
+    using global::EventStore.ClientAPI;
+    using global::EventStore.ClientAPI.Exceptions;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
+
+    /// <summary>
+    /// EventStore implementation of the Aggregate Repository.
+    /// </summary>
     public class EventStoreAggregateRepository : IAggregateRepository
     {
-        private readonly IEventStoreConnection _connection;
         private const int ReadPageSize = 1000;
 
+        private readonly IEventStoreConnection _connection;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventStoreAggregateRepository"/> class.
+        /// </summary>
+        /// <param name="connection">EventStore connection.</param>
         public EventStoreAggregateRepository(IEventStoreConnection connection)
         {
             _connection = connection;
         }
 
+        /// <inheritdoc />
         public void Save(IAggregate aggregateToSave)
         {
             var newEvents = aggregateToSave.GetUncommittedEvents().Cast<object>().ToList();
@@ -41,23 +54,29 @@ namespace CR.AggregateRepository.Persistence.EventStore
             catch (AggregateException ex)
             {
                 var exceptions = ex.InnerExceptions;
-                if(exceptions.Count == 1 && exceptions[0].GetType() == typeof(WrongExpectedVersionException))
+                if (exceptions.Count == 1 && exceptions[0].GetType() == typeof(WrongExpectedVersionException))
+                {
                     throw new AggregateVersionException("Aggregate version incorrect", ex);
+                }
 
                 throw;
             }
         }
 
-        public T GetAggregateFromRepository<T>(object aggregateId, int version = int.MaxValue) where T : IAggregate
+        /// <inheritdoc />
+        public T GetAggregateFromRepository<T>(object aggregateId, int version = int.MaxValue)
+            where T : IAggregate
         {
             if (version <= 0)
+            {
                 throw new InvalidOperationException("Cannot get version <= 0");
+            }
 
             var streamName = StreamNameForAggregateId(aggregateId);
             var aggregate = (T)Activator.CreateInstance(typeof(T), true);
 
             long sliceStart = 0;
-            var eventsCount = 0;            
+            var eventsCount = 0;
             StreamEventsSlice currentSlice;
             do
             {
@@ -68,23 +87,31 @@ namespace CR.AggregateRepository.Persistence.EventStore
                 currentSlice = _connection.ReadStreamEventsForwardAsync(streamName, sliceStart, (int)sliceCount, false).Result;
 
                 if (currentSlice.Status == SliceReadStatus.StreamNotFound)
+                {
                     throw new AggregateNotFoundException();
+                }
 
                 if (currentSlice.Status == SliceReadStatus.StreamDeleted)
+                {
                     throw new AggregateNotFoundException();
+                }
 
                 sliceStart = currentSlice.NextEventNumber;
 
                 foreach (var evnt in currentSlice.Events)
+                {
                     aggregate.ApplyEvent(DeserializeEvent(evnt.OriginalEvent.Metadata, evnt.OriginalEvent.Data));
+                }
 
                 eventsCount += currentSlice.Events.Length;
+            }
+            while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
 
-            } while (version >= currentSlice.NextEventNumber && !currentSlice.IsEndOfStream);
-
-            //if version is greater than number of events, throw exception
-            if(eventsCount < version && version != int.MaxValue)
+            // if version is greater than number of events, throw exception
+            if (eventsCount < version && version != int.MaxValue)
+            {
                 throw new AggregateVersionException("version is higher than actual version");
+            }
 
             return aggregate;
         }
@@ -104,9 +131,9 @@ namespace CR.AggregateRepository.Persistence.EventStore
         {
             var data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(evnt));
 
-            var eventHeaders = new 
+            var eventHeaders = new
                 {
-                    ClrType = evnt.GetType().AssemblyQualifiedName
+                    ClrType = evnt.GetType().AssemblyQualifiedName,
                 };
 
             var metadata = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(eventHeaders));
@@ -114,6 +141,5 @@ namespace CR.AggregateRepository.Persistence.EventStore
 
             return new EventData(eventId, typeName, true, data, metadata);
         }
-
     }
 }
