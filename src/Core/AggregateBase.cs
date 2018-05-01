@@ -50,8 +50,7 @@ namespace CR.AggregateRepository.Core
         /// <inheritdoc />
         public void ApplyEvent(object @event)
         {
-            Action<object> handler;
-            if (_map.TryGetValue(@event.GetType(), out handler))
+            if (_map.TryGetValue(@event.GetType(), out Action<object> handler))
             {
                 handler(@event);
                 Version++;
@@ -59,10 +58,7 @@ namespace CR.AggregateRepository.Core
             else
             {
                 throw new InvalidOperationException(
-                    string.Format(
-                        "{0} can not be applied to {1}. No appropriate mapping is registered",
-                        @event.GetType().Name,
-                        GetType().Name));
+                    $"{@event.GetType().Name} can not be applied to {GetType().Name}. No appropriate mapping is registered");
             }
         }
 
