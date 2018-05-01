@@ -1,21 +1,39 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using CR.AggregateRepository.Core;
-using CR.AggregateRepository.Core.Exceptions;
+﻿// <copyright file="InMemoryAggregateRepository.cs" company="Cognisant">
+// Copyright (c) Cognisant. All rights reserved.
+// </copyright>
 
 namespace CR.AggregateRepository.Persistence.Memory
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Core;
+    using Core.Exceptions;
+
+    /// <summary>
+    /// In Memory implementation of the Aggregate Repository.
+    /// </summary>
     public class InMemoryAggregateRepository : IAggregateRepository
     {
-        public readonly ConcurrentDictionary<object,List<object>> EventStore = new ConcurrentDictionary<object, List<object>>();
-        
+        /// <summary>
+        /// In memory event storage.
+        /// </summary>
+#pragma warning disable SA1401 // Fields should be private
+        public readonly ConcurrentDictionary<object, List<object>> EventStore = new ConcurrentDictionary<object, List<object>>();
+#pragma warning restore SA1401 // Fields should be private
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InMemoryAggregateRepository"/> class.
+        /// </summary>
         public InMemoryAggregateRepository()
         {
-            
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InMemoryAggregateRepository"/> class.
+        /// </summary>
+        /// <param name="initialEvents">A dictionary of initial events added when itializing the instance.</param>
         public InMemoryAggregateRepository(Dictionary<object, List<object>> initialEvents)
         {
             foreach (var item in initialEvents)
@@ -24,12 +42,11 @@ namespace CR.AggregateRepository.Persistence.Memory
             }
         }
 
+        /// <inheritdoc />
         public void Save(IAggregate aggregateToSave)
         {
             var newEvents = aggregateToSave.GetUncommittedEvents().Cast<object>().ToList();
             var originalVersion = aggregateToSave.Version - newEvents.Count;
-
-            List<object> theEvents;
 
             if (originalVersion == 0)
             {
@@ -39,10 +56,12 @@ namespace CR.AggregateRepository.Persistence.Memory
                 }
             }
 
-            if (EventStore.TryGetValue(aggregateToSave.Id, out theEvents))
+            if (EventStore.TryGetValue(aggregateToSave.Id, out var theEvents))
             {
-                if(theEvents.Count != originalVersion)
+                if (theEvents.Count != originalVersion)
+                {
                     throw new AggregateVersionException();
+                }
 
                 theEvents.AddRange(newEvents);
                 aggregateToSave.ClearUncommittedEvents();
@@ -53,18 +72,23 @@ namespace CR.AggregateRepository.Persistence.Memory
             }
         }
 
-        public T GetAggregateFromRepository<T>(object aggregateId, int version = int.MaxValue) where T : IAggregate
+        /// <inheritdoc />
+        public T GetAggregateFromRepository<T>(object aggregateId, int version = int.MaxValue)
+            where T : IAggregate
         {
-            if(version <= 0)
-                throw new ArgumentException("Version must be greater than 0");
-
-            List<object> theEvents;
-            if (EventStore.TryGetValue(aggregateId, out theEvents))
+            if (version <= 0)
             {
-                if (version != Int32.MaxValue && version > theEvents.Count)
-                    throw new AggregateVersionException();
+                throw new ArgumentException("Version must be greater than 0");
+            }
 
-             //   return theEvents.Take(version);
+            if (EventStore.TryGetValue(aggregateId, out var theEvents))
+            {
+                if (version != int.MaxValue && version > theEvents.Count)
+                {
+                    throw new AggregateVersionException();
+                }
+
+                // return theEvents.Take(version);
                 return BuildAggregate<T>(theEvents.Take(version));
             }
             else
@@ -73,15 +97,16 @@ namespace CR.AggregateRepository.Persistence.Memory
             }
         }
 
-        private T BuildAggregate<T>(IEnumerable<object> events) where T : IAggregate
+        private T BuildAggregate<T>(IEnumerable<object> events)
+            where T : IAggregate
         {
-            var instance =  (T)Activator.CreateInstance(typeof(T), true);
+            var instance = (T)Activator.CreateInstance(typeof(T), true);
             foreach (var @event in events)
             {
                 instance.ApplyEvent(@event);
             }
+
             return instance;
         }
     }
 }
- 
