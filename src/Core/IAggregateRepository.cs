@@ -4,24 +4,37 @@
 
 namespace CR.AggregateRepository.Core
 {
+    using Exceptions;
+
     /// <summary>
-    /// Interface for building AggregateRepository classes.
+    /// Represents a method of persisting Instances of <see cref="IAggregate"/>
     /// </summary>
     public interface IAggregateRepository
     {
         /// <summary>
-        /// Saves the aggregate that is passed in.
+        /// Persists any uncommitted events on the <see cref="IAggregate"/> to the underlying storage.
         /// </summary>
-        /// <param name="aggregateToSave">Aggregate which requires saving.</param>
+        /// <param name="aggregateToSave">The <see cref="IAggregate"/> to save.</param>
+        /// <exception cref="AggregateVersionException">
+        /// Thrown if <see cref="IAggregate.Version"/> does not match the current version in the underlying storage.
+        /// </exception>
+        /// <exception cref="AggregateNotFoundException">
+        /// See implementation specific documentation for the circumstances in which this may be thrown.
+        /// </exception>
         void Save(IAggregate aggregateToSave);
 
         /// <summary>
-        /// Gets an Aggregate based on Type and Id.
+        /// Rehydrates an aggregate of the specified type from events in the underlying storage.
         /// </summary>
-        /// <typeparam name="T">Type of aggregate we want to get.</typeparam>
-        /// <param name="aggregateId">Id of the aggregate we want to get.</param>
-        /// <param name="version">Version of the aggregate.</param>
-        /// <returns>Returns an aggregate.</returns>
+        /// <typeparam name="T">The aggregate type to be instantiated.</typeparam>
+        /// <param name="aggregateId">The ID of the aggregate to be loaded.</param>
+        /// <param name="version">
+        /// The version at which to load the aggregate. No events beyond this will be loaded.
+        /// </param>
+        /// <returns>
+        /// Returns an aggregate instance which has had historic events passed to its
+        /// <see cref="IAggregate.ApplyEvent"/> method.
+        /// </returns>
         T GetAggregateFromRepository<T>(object aggregateId, int version = int.MaxValue)
             where T : IAggregate;
     }

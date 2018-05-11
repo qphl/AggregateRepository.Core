@@ -15,7 +15,8 @@ namespace CR.AggregateRepository.Persistence.EventStore
     using Newtonsoft.Json.Linq;
 
     /// <summary>
-    /// EventStore implementation of the Aggregate Repository.
+    /// Implementation of <see cref="IAggregateRepository"/> which uses Event Store as underlying
+    /// storage.
     /// </summary>
     public class EventStoreAggregateRepository : IAggregateRepository
     {
@@ -33,6 +34,7 @@ namespace CR.AggregateRepository.Persistence.EventStore
         }
 
         /// <inheritdoc />
+        /// 
         public void Save(IAggregate aggregateToSave)
         {
             var newEvents = aggregateToSave.GetUncommittedEvents().Cast<object>().ToList();
