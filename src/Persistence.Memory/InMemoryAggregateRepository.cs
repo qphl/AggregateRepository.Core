@@ -32,11 +32,11 @@ namespace CR.AggregateRepository.Persistence.Memory
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InMemoryAggregateRepository"/> class, with the provided streams (and events) contained in the provided <see cref="Dictionary{TKey,TValue}"/>.
+        /// Initializes a new instance of the <see cref="InMemoryAggregateRepository"/> class, with the provided streams (and events) contained in the provided <see cref="IDictionary{TKey,TValue}"/>.
         /// </summary>
         /// <param name="initialEvents">A dictionary of initial events added when itializing the instance.</param>
         // ReSharper disable once UnusedMember.Global
-        public InMemoryAggregateRepository(Dictionary<object, List<object>> initialEvents)
+        public InMemoryAggregateRepository(IDictionary<object, List<object>> initialEvents)
         {
             foreach (var item in initialEvents)
             {
