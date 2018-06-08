@@ -18,7 +18,7 @@ namespace CR.AggregateRepository.Persistence.Memory
     public class InMemoryAggregateRepository : IAggregateRepository
     {
         /// <summary>
-        /// In memory event storage.
+        /// In-memory event storage.
         /// </summary>
 #pragma warning disable SA1401 // Fields should be private
         public readonly ConcurrentDictionary<object, List<object>> EventStore = new ConcurrentDictionary<object, List<object>>();
