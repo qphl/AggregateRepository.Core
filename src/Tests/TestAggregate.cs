@@ -10,6 +10,9 @@ namespace CR.AggregateRepository.Tests
 
         public TestAggregate(string aggregateId) => RaiseEvent(new TestAggregateCreated(aggregateId));
 
+        // ReSharper disable once UnusedMember.Local
+        private TestAggregate() { }
+
         // ReSharper disable once ConvertToAutoPropertyWithPrivateSetter
         public override object Id => _id;
 

@@ -40,7 +40,7 @@ namespace CR.AggregateRepository.Persistence.Memory
         {
             foreach (var item in initialEvents)
             {
-                EventStore.TryAdd(item.Key, item.Value);
+                EventStore.TryAdd(item.Key, new List<object>(item.Value));
             }
         }
 
