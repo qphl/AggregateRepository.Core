@@ -11,6 +11,7 @@ namespace CR.AggregateRepository.Persistence.Memory
     using Core;
     using Core.Exceptions;
 
+    /// <inheritdoc />
     /// <summary>
     /// In Memory implementation of the Aggregate Repository.
     /// </summary>
@@ -34,6 +35,7 @@ namespace CR.AggregateRepository.Persistence.Memory
         /// Initializes a new instance of the <see cref="InMemoryAggregateRepository"/> class.
         /// </summary>
         /// <param name="initialEvents">A dictionary of initial events added when itializing the instance.</param>
+        // ReSharper disable once UnusedMember.Global
         public InMemoryAggregateRepository(Dictionary<object, List<object>> initialEvents)
         {
             foreach (var item in initialEvents)
@@ -68,7 +70,7 @@ namespace CR.AggregateRepository.Persistence.Memory
             }
             else
             {
-               throw new AggregateNotFoundException();
+                throw new AggregateNotFoundException();
             }
         }
 
@@ -81,23 +83,20 @@ namespace CR.AggregateRepository.Persistence.Memory
                 throw new ArgumentException("Version must be greater than 0");
             }
 
-            if (EventStore.TryGetValue(aggregateId, out var theEvents))
-            {
-                if (version != int.MaxValue && version > theEvents.Count)
-                {
-                    throw new AggregateVersionException();
-                }
-
-                // return theEvents.Take(version);
-                return BuildAggregate<T>(theEvents.Take(version));
-            }
-            else
+            if (!EventStore.TryGetValue(aggregateId, out var theEvents))
             {
                 throw new AggregateNotFoundException();
             }
+
+            if (version != int.MaxValue && version > theEvents.Count)
+            {
+                throw new AggregateVersionException();
+            }
+
+            return BuildAggregate<T>(theEvents.Take(version));
         }
 
-        private T BuildAggregate<T>(IEnumerable<object> events)
+        private static T BuildAggregate<T>(IEnumerable<object> events)
             where T : IAggregate
         {
             var instance = (T)Activator.CreateInstance(typeof(T), true);

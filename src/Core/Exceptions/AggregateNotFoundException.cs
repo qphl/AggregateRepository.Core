@@ -7,6 +7,7 @@ namespace CR.AggregateRepository.Core.Exceptions
     using System;
     using System.Runtime.Serialization;
 
+    /// <inheritdoc />
     /// <summary>
     /// Thrown in the event of an aggregate not being found.
     /// </summary>
@@ -16,6 +17,7 @@ namespace CR.AggregateRepository.Core.Exceptions
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateNotFoundException"/> class.
         /// </summary>
+        // ReSharper disable once InheritdocConsiderUsage
         public AggregateNotFoundException()
         {
         }
@@ -24,6 +26,8 @@ namespace CR.AggregateRepository.Core.Exceptions
         /// Initializes a new instance of the <see cref="AggregateNotFoundException"/> class.
         /// </summary>
         /// <param name="message">Message displayed with the exception.</param>
+        // ReSharper disable once InheritdocConsiderUsage
+        // ReSharper disable once UnusedMember.Global
         public AggregateNotFoundException(string message)
             : base(message)
         {
@@ -34,6 +38,7 @@ namespace CR.AggregateRepository.Core.Exceptions
         /// </summary>
         /// <param name="message">Message displayed with the exception.</param>
         /// <param name="inner">The exception that threw this exception.</param>
+        // ReSharper disable once InheritdocConsiderUsage
         public AggregateNotFoundException(string message, Exception inner)
             : base(message, inner)
         {
@@ -44,9 +49,8 @@ namespace CR.AggregateRepository.Core.Exceptions
         /// </summary>
         /// <param name="info">Serialization info</param>
         /// <param name="context">COntext</param>
-        protected AggregateNotFoundException(
-            SerializationInfo info,
-            StreamingContext context)
+        // ReSharper disable once InheritdocConsiderUsage
+        protected AggregateNotFoundException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

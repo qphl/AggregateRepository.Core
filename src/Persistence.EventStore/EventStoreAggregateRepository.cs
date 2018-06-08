@@ -14,8 +14,9 @@ namespace CR.AggregateRepository.Persistence.EventStore
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
+    /// <inheritdoc />
     /// <summary>
-    /// Implementation of <see cref="IAggregateRepository"/> which uses Event Store as underlying
+    /// Implementation of <see cref="T:CR.AggregateRepository.Core.IAggregateRepository" /> which uses Event Store as underlying
     /// storage.
     /// </summary>
     public class EventStoreAggregateRepository : IAggregateRepository
@@ -28,19 +29,15 @@ namespace CR.AggregateRepository.Persistence.EventStore
         /// Initializes a new instance of the <see cref="EventStoreAggregateRepository"/> class.
         /// </summary>
         /// <param name="connection">EventStore connection.</param>
-        public EventStoreAggregateRepository(IEventStoreConnection connection)
-        {
-            _connection = connection;
-        }
+        public EventStoreAggregateRepository(IEventStoreConnection connection) => _connection = connection;
 
         /// <inheritdoc />
-        /// 
         public void Save(IAggregate aggregateToSave)
         {
             var newEvents = aggregateToSave.GetUncommittedEvents().Cast<object>().ToList();
             var originalVersion = aggregateToSave.Version - newEvents.Count;
-
             var streamName = StreamNameForAggregateId(aggregateToSave.Id);
+
             var expectedVersion = originalVersion == 0 ? ExpectedVersion.NoStream : originalVersion - 1;
             var eventsToSave = newEvents.Select(e => ToEventData(Guid.NewGuid(), e)).ToList();
 
@@ -82,20 +79,15 @@ namespace CR.AggregateRepository.Persistence.EventStore
             StreamEventsSlice currentSlice;
             do
             {
-                var sliceCount = sliceStart + ReadPageSize <= version
-                                    ? ReadPageSize
-                                    : version - sliceStart + 1;
-
+                var sliceCount = sliceStart + ReadPageSize <= version ? ReadPageSize : version - sliceStart + 1;
                 currentSlice = _connection.ReadStreamEventsForwardAsync(streamName, sliceStart, (int)sliceCount, false).Result;
 
-                if (currentSlice.Status == SliceReadStatus.StreamNotFound)
+                // ReSharper disable once SwitchStatementMissingSomeCases
+                switch (currentSlice.Status)
                 {
-                    throw new AggregateNotFoundException();
-                }
-
-                if (currentSlice.Status == SliceReadStatus.StreamDeleted)
-                {
-                    throw new AggregateNotFoundException();
+                    case SliceReadStatus.StreamNotFound:
+                    case SliceReadStatus.StreamDeleted:
+                        throw new AggregateNotFoundException();
                 }
 
                 sliceStart = currentSlice.NextEventNumber;
@@ -124,19 +116,16 @@ namespace CR.AggregateRepository.Persistence.EventStore
             return JsonConvert.DeserializeObject(Encoding.UTF8.GetString(data), Type.GetType((string)eventClrTypeName));
         }
 
-        private static string StreamNameForAggregateId(object id)
-        {
-            return "aggregate-" + id;
-        }
+        private static string StreamNameForAggregateId(object id) => "aggregate-" + id;
 
         private static EventData ToEventData(Guid eventId, object evnt)
         {
             var data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(evnt));
 
             var eventHeaders = new
-                {
-                    ClrType = evnt.GetType().AssemblyQualifiedName,
-                };
+            {
+                ClrType = evnt.GetType().AssemblyQualifiedName,
+            };
 
             var metadata = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(eventHeaders));
             var typeName = evnt.GetType().Name;

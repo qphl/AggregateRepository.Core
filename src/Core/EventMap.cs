@@ -7,6 +7,7 @@ namespace CR.AggregateRepository.Core
     using System;
     using System.Collections.Generic;
 
+    /// <inheritdoc />
     /// <summary>
     /// Matches a type to an action.
     /// </summary>

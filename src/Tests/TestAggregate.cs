@@ -2,50 +2,29 @@
 using System.Collections.Generic;
 using CR.AggregateRepository.Core;
 
-
-
 namespace CR.AggregateRepository.Tests
 {
-    internal class TestAggregate : AggregateBase
+    internal sealed class TestAggregate : AggregateBase
     {
         private object _id;
 
-        public override object Id
-        {
-            get { return _id; }
-        }
+        public TestAggregate(string aggregateId) => RaiseEvent(new TestAggregateCreated(aggregateId));
 
-        public List<Guid> eventsApplied = new List<Guid>();
+        // ReSharper disable once ConvertToAutoPropertyWithPrivateSetter
+        public override object Id => _id;
 
-        private readonly List<Object> _changes = new List<Object>();
-
-        public TestAggregate(string aggregateId)
-        {
-            RaiseEvent(new TestAggregateCreated(aggregateId));
-        }
-
-        private TestAggregate() { }
+        public List<Guid> EventsApplied { get; } = new List<Guid>();
 
         protected override EventMap Map => new EventMap
         {
-            [typeof(TestEvent)] = e => Apply((TestEvent) e),
-            [typeof(TestAggregateCreated)] = e => Apply((TestAggregateCreated) e)
+            [typeof(TestEvent)] = e => Apply((TestEvent)e),
+            [typeof(TestAggregateCreated)] = e => Apply((TestAggregateCreated)e)
         };
 
-        public void Apply(TestEvent e)
-        {
-            eventsApplied.Add(e.EventId);
-        }
+        public void Apply(TestEvent e) => EventsApplied.Add(e.EventId);
 
-        public void Apply(TestAggregateCreated e)
-        {
-            _id = e.AggregateId;
-        }
+        public void Apply(TestAggregateCreated e) => _id = e.AggregateId;
 
-        public void GenerateEvent(Guid eventId)
-        {
-            RaiseEvent(new TestEvent(eventId));
-        }
-
+        public void GenerateEvent(Guid eventId) => RaiseEvent(new TestEvent(eventId));
     }
 }

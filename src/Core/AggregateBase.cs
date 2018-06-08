@@ -8,6 +8,7 @@ namespace CR.AggregateRepository.Core
     using System.Collections;
     using System.Collections.Generic;
 
+    /// <inheritdoc />
     /// <summary>
     /// Base class for building an Aggregate.
     /// </summary>
@@ -17,26 +18,26 @@ namespace CR.AggregateRepository.Core
         /// <summary>
         /// Used for doing nothing when applying an event.
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        // ReSharper disable once InconsistentNaming
         protected static Action<object> noop = e => { };
 #pragma warning restore SA1401 // Fields should be private
 
         private readonly List<object> _changes = new List<object>();
-
-        private EventMap _map;
+        private readonly EventMap _map;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AggregateBase"/> class.
         /// </summary>
-        public AggregateBase()
-        {
-            _map = Map;
-        }
-
-        /// <inheritdoc />
-        public abstract object Id { get; }
+        // ReSharper disable once VirtualMemberCallInConstructor
+        // ReSharper disable once UnusedMember.Global
+        protected AggregateBase() => _map = Map;
 
         /// <inheritdoc />
         public int Version { get; private set; }
+
+        /// <inheritdoc />
+        public abstract object Id { get; }
 
         /// <summary>
         /// Gets the EventMap used within the aggregate.
@@ -50,29 +51,22 @@ namespace CR.AggregateRepository.Core
         /// <inheritdoc />
         public void ApplyEvent(object @event)
         {
-            if (_map.TryGetValue(@event.GetType(), out Action<object> handler))
+            if (_map.TryGetValue(@event.GetType(), out var handler))
             {
                 handler(@event);
                 Version++;
             }
             else
             {
-                throw new InvalidOperationException(
-                    $"{@event.GetType().Name} can not be applied to {GetType().Name}. No appropriate mapping is registered");
+                throw new InvalidOperationException($"{@event.GetType().Name} can not be applied to {GetType().Name}. No appropriate mapping is registered");
             }
         }
 
         /// <inheritdoc />
-        public ICollection GetUncommittedEvents()
-        {
-            return _changes;
-        }
+        public ICollection GetUncommittedEvents() => _changes;
 
         /// <inheritdoc />
-        public void ClearUncommittedEvents()
-        {
-            _changes.Clear();
-        }
+        public void ClearUncommittedEvents() => _changes.Clear();
 
         /// <summary>
         /// Raises the event that is passed in.

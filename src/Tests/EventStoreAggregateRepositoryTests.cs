@@ -1,11 +1,7 @@
 ﻿extern alias EventStoreNetFrameworkClient;
 extern alias EventStoreNetCoreClient;
-using System.Reflection;
-using System.ServiceModel.Channels;
 using CR.AggregateRepository.Persistence.EventStore;
 using EventStore.ClientAPI.Embedded;
-using EventStoreNetCoreClient::EventStore.ClientAPI.Messages;
-using NUnit.Framework.Interfaces;
 
 namespace CR.AggregateRepository.Tests
 {
@@ -21,7 +17,8 @@ namespace CR.AggregateRepository.Tests
 
             _connection = EmbeddedEventStoreConnection.Create(_eventStore.Node);
             _connection.ConnectAsync().Wait();
-            _repoUnderTest = new EventStoreAggregateRepository(new ConnectionTranslator(_connection));
+
+            RepoUnderTest = new EventStoreAggregateRepository(new ConnectionTranslator(_connection));
         }
 
         protected override void CleanUpRepository()

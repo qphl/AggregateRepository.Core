@@ -7,6 +7,7 @@ namespace CR.AggregateRepository.Core.Exceptions
     using System;
     using System.Runtime.Serialization;
 
+    /// <inheritdoc />
     /// <summary>
     /// Thrown when an incorrect aggregate version is specified
     /// </summary>
@@ -14,8 +15,9 @@ namespace CR.AggregateRepository.Core.Exceptions
     public class AggregateVersionException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AggregateVersionException"/> class
+        /// Initializes a new instance of the <see cref="AggregateVersionException" /> class
         /// </summary>
+        // ReSharper disable once InheritdocConsiderUsage
         public AggregateVersionException()
         {
         }
@@ -24,6 +26,7 @@ namespace CR.AggregateRepository.Core.Exceptions
         /// Initializes a new instance of the <see cref="AggregateVersionException"/> class.
         /// </summary>
         /// <param name="message">Message displayed with the exception.</param>
+        // ReSharper disable once InheritdocConsiderUsage
         public AggregateVersionException(string message)
             : base(message)
         {
@@ -34,6 +37,7 @@ namespace CR.AggregateRepository.Core.Exceptions
         /// </summary>
         /// <param name="message">Message displayed with the exception</param>
         /// <param name="inner">The exception that threw this exception</param>
+        // ReSharper disable once InheritdocConsiderUsage
         public AggregateVersionException(string message, Exception inner)
             : base(message, inner)
         {
@@ -44,6 +48,7 @@ namespace CR.AggregateRepository.Core.Exceptions
         /// </summary>
         /// <param name="info">Serialization info</param>
         /// <param name="context">Context</param>
+        // ReSharper disable once InheritdocConsiderUsage
         protected AggregateVersionException(
             SerializationInfo info,
             StreamingContext context)

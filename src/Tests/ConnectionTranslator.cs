@@ -23,25 +23,17 @@ namespace CR.AggregateRepository.Tests
     {
         private readonly EventStoreNetFrameworkClient::EventStore.ClientAPI.IEventStoreConnection _connection;
 
-        public ConnectionTranslator(EventStoreNetFrameworkClient.EventStore.ClientAPI.IEventStoreConnection connection)
-        {
-            _connection = connection;
-        }
+        public ConnectionTranslator(EventStoreNetFrameworkClient.EventStore.ClientAPI.IEventStoreConnection connection) => _connection = connection;
 
         public async Task<WriteResult> AppendToStreamAsync(string stream, long expectedVersion, IEnumerable<EventData> events,
             EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
         {
-            var translatedEvents = events.Select(e =>
-                new EventStoreNetFrameworkClient.EventStore.ClientAPI.EventData(e.EventId, e.Type, e.IsJson, e.Data,
-                    e.Metadata));
-
+            var translatedEvents = events.Select(e => new EventStoreNetFrameworkClient.EventStore.ClientAPI.EventData(e.EventId, e.Type, e.IsJson, e.Data, e.Metadata));
             var translatedUserCredentials = userCredentials == null ? null : new EventStoreNetFrameworkClient.EventStore.ClientAPI.SystemData.UserCredentials(userCredentials.Username, userCredentials.Password);
 
             try
             {
-                var result = await _connection.AppendToStreamAsync(stream, expectedVersion, translatedEvents,
-                    translatedUserCredentials);
-
+                var result = await _connection.AppendToStreamAsync(stream, expectedVersion, translatedEvents, translatedUserCredentials);
                 var logPosition = new Position(result.LogPosition.CommitPosition, result.LogPosition.PreparePosition);
                 return new WriteResult(result.NextExpectedVersion, logPosition);
             }
@@ -51,49 +43,39 @@ namespace CR.AggregateRepository.Tests
             }
         }
 
-        public async Task<StreamEventsSlice> ReadStreamEventsForwardAsync(string stream, long start, int count, bool resolveLinkTos,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
+        public async Task<StreamEventsSlice> ReadStreamEventsForwardAsync(string stream, long start, int count, bool resolveLinkTos, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
         {
             var translatedUserCredentials = userCredentials == null ? null : new EventStoreNetFrameworkClient.EventStore.ClientAPI.SystemData.UserCredentials(userCredentials.Username, userCredentials.Password);
-
-            return await _connection
-                .ReadStreamEventsForwardAsync(stream, start, count, resolveLinkTos, translatedUserCredentials)
-                .ContinueWith(t =>
+            return await _connection.ReadStreamEventsForwardAsync(stream, start, count, resolveLinkTos, translatedUserCredentials).ContinueWith(t =>
                 {
                     var result = t.Result;
                     var translatedStatus = EventStoreNetCoreClient.EventStore.ClientAPI.SliceReadStatus.StreamDeleted;
 
+                    // ReSharper disable once SwitchStatementMissingSomeCases
                     switch (result.Status)
                     {
-                        case (SliceReadStatus.StreamNotFound):
+                        case SliceReadStatus.StreamNotFound:
                             translatedStatus = EventStoreNetCoreClient.EventStore.ClientAPI.SliceReadStatus.StreamNotFound;
                             break;
-                        case (SliceReadStatus.Success):
+                        case SliceReadStatus.Success:
                             translatedStatus = EventStoreNetCoreClient.EventStore.ClientAPI.SliceReadStatus.Success;
                             break;
                     }
 
                     var translatedEvents = result.Events.Select(e =>
                     {
-                        var recordedEvent = (RecordedEvent)System.Runtime.Serialization.FormatterServices
-                            .GetUninitializedObject(typeof(RecordedEvent));
+                        var recordedEvent = (RecordedEvent)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(RecordedEvent));
 
                         recordedEvent.Created = e.Event.Created;
                         recordedEvent.CreatedEpoch = e.Event.CreatedEpoch;
 
                         var recordedType = recordedEvent.GetType();
-
                         recordedType.GetField("Data")?.SetValue(recordedEvent, e.Event.Data);
-                        recordedType.GetField("EventStreamId")
-                            ?.SetValue(recordedEvent, e.Event.EventStreamId);
-                        recordedType.GetField("EventType")
-                            ?.SetValue(recordedEvent, e.Event.EventType);
-                        recordedType.GetField("Metadata")
-                            ?.SetValue(recordedEvent, e.Event.Metadata);
-                        recordedType.GetField("EventId")
-                            ?.SetValue(recordedEvent, e.Event.EventId);
-                        recordedType.GetField("EventNumber")
-                            ?.SetValue(recordedEvent, e.Event.EventNumber);
+                        recordedType.GetField("EventStreamId")?.SetValue(recordedEvent, e.Event.EventStreamId);
+                        recordedType.GetField("EventType")?.SetValue(recordedEvent, e.Event.EventType);
+                        recordedType.GetField("Metadata")?.SetValue(recordedEvent, e.Event.Metadata);
+                        recordedType.GetField("EventId")?.SetValue(recordedEvent, e.Event.EventId);
+                        recordedType.GetField("EventNumber")?.SetValue(recordedEvent, e.Event.EventNumber);
                         recordedType.GetField("IsJson")?.SetValue(recordedEvent, e.Event.IsJson);
 
                         object resolvedEvent = (ResolvedEvent)System.Runtime.Serialization.FormatterServices
@@ -127,188 +109,92 @@ namespace CR.AggregateRepository.Tests
 
         #region Not used by current aggregate repo implementation
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+        public void Dispose() => throw new NotImplementedException();
 
-        public Task ConnectAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public Task ConnectAsync() => throw new NotImplementedException();
 
-        public void Close()
-        {
-            throw new NotImplementedException();
-        }
+        public void Close() => throw new NotImplementedException();
 
-        public Task<DeleteResult> DeleteStreamAsync(string stream, long expectedVersion, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<DeleteResult> DeleteStreamAsync(string stream, long expectedVersion, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task<DeleteResult> DeleteStreamAsync(string stream, long expectedVersion, bool hardDelete, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<DeleteResult> DeleteStreamAsync(string stream, long expectedVersion, bool hardDelete, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task<WriteResult> AppendToStreamAsync(string stream, long expectedVersion, params EventData[] events)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<WriteResult> AppendToStreamAsync(string stream, long expectedVersion, params EventData[] events) => throw new NotImplementedException();
 
-        public Task<WriteResult> AppendToStreamAsync(string stream, long expectedVersion, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials,
-            params EventData[] events)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<WriteResult> AppendToStreamAsync(string stream, long expectedVersion, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials, params EventData[] events) => throw new NotImplementedException();
 
         public Task<ConditionalWriteResult> ConditionalAppendToStreamAsync(string stream, long expectedVersion, IEnumerable<EventData> events,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task<EventStoreTransaction> StartTransactionAsync(string stream, long expectedVersion, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<EventStoreTransaction> StartTransactionAsync(string stream, long expectedVersion, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public EventStoreTransaction ContinueTransaction(long transactionId, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public EventStoreTransaction ContinueTransaction(long transactionId, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task<EventReadResult> ReadEventAsync(string stream, long eventNumber, bool resolveLinkTos, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<EventReadResult> ReadEventAsync(string stream, long eventNumber, bool resolveLinkTos, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task<StreamEventsSlice> ReadStreamEventsBackwardAsync(string stream, long start, int count, bool resolveLinkTos,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<StreamEventsSlice> ReadStreamEventsBackwardAsync(string stream, long start, int count, bool resolveLinkTos, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task<AllEventsSlice> ReadAllEventsForwardAsync(Position position, int maxCount, bool resolveLinkTos,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<AllEventsSlice> ReadAllEventsForwardAsync(Position position, int maxCount, bool resolveLinkTos, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task<AllEventsSlice> ReadAllEventsBackwardAsync(Position position, int maxCount, bool resolveLinkTos,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<AllEventsSlice> ReadAllEventsBackwardAsync(Position position, int maxCount, bool resolveLinkTos, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
         public Task<EventStoreSubscription> SubscribeToStreamAsync(string stream, bool resolveLinkTos, Func<EventStoreSubscription, ResolvedEvent, Task> eventAppeared, Action<EventStoreSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public EventStoreStreamCatchUpSubscription SubscribeToStreamFrom(string stream, long? lastCheckpoint, bool resolveLinkTos,
-            Func<EventStoreCatchUpSubscription, ResolvedEvent, Task> eventAppeared, Action<EventStoreCatchUpSubscription> liveProcessingStarted = null, Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null, int readBatchSize = 500, string subscriptionName = "")
-        {
-            throw new NotImplementedException();
-        }
+        public EventStoreStreamCatchUpSubscription SubscribeToStreamFrom(string stream, long? lastCheckpoint, bool resolveLinkTos, Func<EventStoreCatchUpSubscription, ResolvedEvent, Task> eventAppeared, Action<EventStoreCatchUpSubscription> liveProcessingStarted = null,
+            Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null, int readBatchSize = 500, string subscriptionName = "") => throw new NotImplementedException();
 
-        public EventStoreStreamCatchUpSubscription SubscribeToStreamFrom(string stream, long? lastCheckpoint,
-            CatchUpSubscriptionSettings settings, Func<EventStoreCatchUpSubscription, ResolvedEvent, Task> eventAppeared, Action<EventStoreCatchUpSubscription> liveProcessingStarted = null,
-            Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public EventStoreStreamCatchUpSubscription SubscribeToStreamFrom(string stream, long? lastCheckpoint, CatchUpSubscriptionSettings settings, Func<EventStoreCatchUpSubscription, ResolvedEvent, Task> eventAppeared, Action<EventStoreCatchUpSubscription> liveProcessingStarted = null,
+            Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
         public Task<EventStoreSubscription> SubscribeToAllAsync(bool resolveLinkTos, Func<EventStoreSubscription, ResolvedEvent, Task> eventAppeared, Action<EventStoreSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public EventStorePersistentSubscriptionBase ConnectToPersistentSubscription(string stream, string groupName,
-            Func<EventStorePersistentSubscriptionBase, ResolvedEvent, int?, Task> eventAppeared, Action<EventStorePersistentSubscriptionBase, SubscriptionDropReason, Exception> subscriptionDropped = null, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null, int bufferSize = 10,
-            bool autoAck = true)
-        {
-            throw new NotImplementedException();
-        }
+        public EventStorePersistentSubscriptionBase ConnectToPersistentSubscription(string stream, string groupName, Func<EventStorePersistentSubscriptionBase, ResolvedEvent, int?, Task> eventAppeared, Action<EventStorePersistentSubscriptionBase, SubscriptionDropReason, Exception> subscriptionDropped = null,
+            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null, int bufferSize = 10, bool autoAck = true) => throw new NotImplementedException();
 
-        public Task<EventStorePersistentSubscriptionBase> ConnectToPersistentSubscriptionAsync(string stream, string groupName, Func<EventStorePersistentSubscriptionBase, ResolvedEvent, int?, Task> eventAppeared,
-            Action<EventStorePersistentSubscriptionBase, SubscriptionDropReason, Exception> subscriptionDropped = null, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null, int bufferSize = 10,
-            bool autoAck = true)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<EventStorePersistentSubscriptionBase> ConnectToPersistentSubscriptionAsync(string stream, string groupName, Func<EventStorePersistentSubscriptionBase, ResolvedEvent, int?, Task> eventAppeared, Action<EventStorePersistentSubscriptionBase, SubscriptionDropReason, Exception> subscriptionDropped = null,
+            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null, int bufferSize = 10, bool autoAck = true) => throw new NotImplementedException();
 
-        public EventStoreAllCatchUpSubscription SubscribeToAllFrom(Position? lastCheckpoint, bool resolveLinkTos, Func<EventStoreCatchUpSubscription, ResolvedEvent, Task> eventAppeared,
-            Action<EventStoreCatchUpSubscription> liveProcessingStarted = null, Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null,
-            int readBatchSize = 500, string subscriptionName = "")
-        {
-            throw new NotImplementedException();
-        }
+        public EventStoreAllCatchUpSubscription SubscribeToAllFrom(Position? lastCheckpoint, bool resolveLinkTos, Func<EventStoreCatchUpSubscription, ResolvedEvent, Task> eventAppeared, Action<EventStoreCatchUpSubscription> liveProcessingStarted = null,
+            Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null, int readBatchSize = 500, string subscriptionName = "") => throw new NotImplementedException();
 
-        public EventStoreAllCatchUpSubscription SubscribeToAllFrom(Position? lastCheckpoint, CatchUpSubscriptionSettings settings,
-            Func<EventStoreCatchUpSubscription, ResolvedEvent, Task> eventAppeared, Action<EventStoreCatchUpSubscription> liveProcessingStarted = null, Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public EventStoreAllCatchUpSubscription SubscribeToAllFrom(Position? lastCheckpoint, CatchUpSubscriptionSettings settings, Func<EventStoreCatchUpSubscription, ResolvedEvent, Task> eventAppeared, Action<EventStoreCatchUpSubscription> liveProcessingStarted = null,
+            Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task UpdatePersistentSubscriptionAsync(string stream, string groupName, PersistentSubscriptionSettings settings,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials credentials)
-        {
-            throw new NotImplementedException();
-        }
+        public Task UpdatePersistentSubscriptionAsync(string stream, string groupName, PersistentSubscriptionSettings settings, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials credentials) => throw new NotImplementedException();
 
-        public Task CreatePersistentSubscriptionAsync(string stream, string groupName, PersistentSubscriptionSettings settings,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials credentials)
-        {
-            throw new NotImplementedException();
-        }
+        public Task CreatePersistentSubscriptionAsync(string stream, string groupName, PersistentSubscriptionSettings settings, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials credentials) => throw new NotImplementedException();
 
-        public Task DeletePersistentSubscriptionAsync(string stream, string groupName, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task DeletePersistentSubscriptionAsync(string stream, string groupName, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task<WriteResult> SetStreamMetadataAsync(string stream, long expectedMetastreamVersion, StreamMetadata metadata,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<WriteResult> SetStreamMetadataAsync(string stream, long expectedMetastreamVersion, StreamMetadata metadata, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task<WriteResult> SetStreamMetadataAsync(string stream, long expectedMetastreamVersion, byte[] metadata,
-            EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<WriteResult> SetStreamMetadataAsync(string stream, long expectedMetastreamVersion, byte[] metadata, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task<StreamMetadataResult> GetStreamMetadataAsync(string stream, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<StreamMetadataResult> GetStreamMetadataAsync(string stream, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task<RawStreamMetadataResult> GetStreamMetadataAsRawBytesAsync(string stream, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<RawStreamMetadataResult> GetStreamMetadataAsRawBytesAsync(string stream, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
-        public Task SetSystemSettingsAsync(SystemSettings settings, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null)
-        {
-            throw new NotImplementedException();
-        }
+        public Task SetSystemSettingsAsync(SystemSettings settings, EventStoreNetCoreClient.EventStore.ClientAPI.SystemData.UserCredentials userCredentials = null) => throw new NotImplementedException();
 
+        // ReSharper disable UnassignedGetOnlyAutoProperty
         public string ConnectionName { get; }
-        public ConnectionSettings Settings { get; }
-        public event EventHandler<ClientConnectionEventArgs> Connected;
-        public event EventHandler<ClientConnectionEventArgs> Disconnected;
-        public event EventHandler<ClientReconnectingEventArgs> Reconnecting;
-        public event EventHandler<ClientClosedEventArgs> Closed;
-        public event EventHandler<ClientErrorEventArgs> ErrorOccurred;
-        public event EventHandler<ClientAuthenticationFailedEventArgs> AuthenticationFailed;
 
+        public ConnectionSettings Settings { get; }
+        // ReSharper restore UnassignedGetOnlyAutoProperty
+
+        public event EventHandler<ClientConnectionEventArgs> Connected;
+
+        public event EventHandler<ClientConnectionEventArgs> Disconnected;
+
+        public event EventHandler<ClientReconnectingEventArgs> Reconnecting;
+
+        public event EventHandler<ClientClosedEventArgs> Closed;
+
+        public event EventHandler<ClientErrorEventArgs> ErrorOccurred;
+
+        public event EventHandler<ClientAuthenticationFailedEventArgs> AuthenticationFailed;
         #endregion
     }
 }
