@@ -13,7 +13,7 @@ namespace CR.AggregateRepository.Persistence.Memory
 
     /// <inheritdoc />
     /// <summary>
-    /// In Memory implementation of the Aggregate Repository.
+    /// A simple in-memory aggregate repository implementation which reads events from, and writes them to, a <see cref="ConcurrentDictionary{TKey,TValue}"/>.
     /// </summary>
     public class InMemoryAggregateRepository : IAggregateRepository
     {
@@ -25,14 +25,14 @@ namespace CR.AggregateRepository.Persistence.Memory
 #pragma warning restore SA1401 // Fields should be private
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InMemoryAggregateRepository"/> class.
+        /// Initializes a new instance of the <see cref="InMemoryAggregateRepository"/> class with an empty event store.
         /// </summary>
         public InMemoryAggregateRepository()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InMemoryAggregateRepository"/> class.
+        /// Initializes a new instance of the <see cref="InMemoryAggregateRepository"/> class, with the provided streams (and events) contained in the provided <see cref="Dictionary{TKey,TValue}"/>.
         /// </summary>
         /// <param name="initialEvents">A dictionary of initial events added when itializing the instance.</param>
         // ReSharper disable once UnusedMember.Global

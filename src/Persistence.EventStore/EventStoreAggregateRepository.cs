@@ -16,8 +16,7 @@ namespace CR.AggregateRepository.Persistence.EventStore
 
     /// <inheritdoc />
     /// <summary>
-    /// Implementation of <see cref="T:CR.AggregateRepository.Core.IAggregateRepository" /> which uses Event Store as underlying
-    /// storage.
+    /// Implementation of <see cref="T:CR.AggregateRepository.Core.IAggregateRepository" /> which uses Event Store as underlying storage for an aggregate's events.
     /// </summary>
     public class EventStoreAggregateRepository : IAggregateRepository
     {
@@ -26,9 +25,9 @@ namespace CR.AggregateRepository.Persistence.EventStore
         private readonly IEventStoreConnection _connection;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventStoreAggregateRepository"/> class.
+        /// Initializes a new instance of the <see cref="EventStoreAggregateRepository"/> class using the provided <see cref="IEventStoreConnection"/> to access and save events for an <see cref="IAggregate"/>.
         /// </summary>
-        /// <param name="connection">EventStore connection.</param>
+        /// <param name="connection">The <see cref="IEventStoreConnection"/> to read from and write to.</param>
         public EventStoreAggregateRepository(IEventStoreConnection connection) => _connection = connection;
 
         /// <inheritdoc />

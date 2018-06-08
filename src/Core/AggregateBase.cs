@@ -10,7 +10,7 @@ namespace CR.AggregateRepository.Core
 
     /// <inheritdoc />
     /// <summary>
-    /// Base class for building an Aggregate.
+    /// The abstract base class for building an aggregate. This can be inherited from to allow for building, manipulating and updating an instance of an object through a collection of events.
     /// </summary>
     public abstract class AggregateBase : IAggregate
     {
@@ -40,13 +40,13 @@ namespace CR.AggregateRepository.Core
         public abstract object Id { get; }
 
         /// <summary>
-        /// Gets the EventMap used within the aggregate.
+        /// Gets the <see cref="EventMap"/> used internally by the aggregate.
         /// </summary>
         protected abstract EventMap Map { get; }
 
         /// <summary>
         /// <inheritdoc />
-        /// <exception cref="InvalidOperationException">If an event is not mapped then an InvalidOperationException will be thrown </exception>
+        /// <exception cref="InvalidOperationException">If the provided event's <see cref="Type"/> is not mapped in the internal <see cref="EventMap"/>, an <see cref="InvalidOperationException"/> will be thrown.</exception>
         /// </summary>
         /// <inheritdoc />
         public void ApplyEvent(object @event)
@@ -69,7 +69,7 @@ namespace CR.AggregateRepository.Core
         public void ClearUncommittedEvents() => _changes.Clear();
 
         /// <summary>
-        /// Raises the event that is passed in.
+        /// Raises the event that is passed in against the aggredate, applying any necessary changes to keep the aggregate's state up to date.
         /// </summary>
         /// <param name="event">Event Data</param>
         protected void RaiseEvent(object @event)

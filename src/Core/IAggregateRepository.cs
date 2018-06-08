@@ -7,7 +7,7 @@ namespace CR.AggregateRepository.Core
     using Exceptions;
 
     /// <summary>
-    /// Represents a method of persisting Instances of <see cref="IAggregate"/>
+    /// Represents a method of persisting instances of <see cref="IAggregate"/>, handling both storage and access.
     /// </summary>
     public interface IAggregateRepository
     {

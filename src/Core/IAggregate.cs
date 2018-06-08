@@ -25,9 +25,11 @@ namespace CR.AggregateRepository.Core
 
         /// <summary>
         /// Applies an event to the aggregate.
-        /// This is the mechanism by which aggregates are rehydrated by an <see cref="IAggregateRepository"/>.
         /// </summary>
-        /// <param name="event">The Event object to apply.</param>
+        /// <remarks>
+        /// This is the mechanism by which aggregates are rehydrated by an <see cref="IAggregateRepository"/>.
+        /// </remarks>
+        /// <param name="event">The Event object to apply to the aggregate.</param>
         void ApplyEvent(object @event);
 
         /// <summary>
@@ -37,7 +39,7 @@ namespace CR.AggregateRepository.Core
         ICollection GetUncommittedEvents();
 
         /// <summary>
-        /// Clears all uncommitted events.
+        /// Clears all uncommitted events attributed to the aggregate.
         /// </summary>
         void ClearUncommittedEvents();
     }
