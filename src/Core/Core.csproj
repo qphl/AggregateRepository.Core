@@ -15,4 +15,20 @@
     <Authors>Cognisant</Authors>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <DocumentationFile>bin\Debug\netstandard2.0\CR.AggregateRepository.Core.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\CR.AggregateRepository.Core.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CR.CodeStyle.CSharp.Full" Version="1.0.1" />
+  </ItemGroup>
+
 </Project>

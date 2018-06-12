@@ -11,8 +11,8 @@ namespace CR.AggregateRepository.Tests
     {
         public ClusterVNode Node { get; private set; }
 
-        public readonly int TcpEndPoint;
-        public readonly int HttpEndPoint;
+        public int HttpEndPoint { get; }
+        public int TcpEndPoint { get; }
 
         public EmbeddedEventStore(int tcpPort, int httpPort)
         {
@@ -28,8 +28,10 @@ namespace CR.AggregateRepository.Tests
                 .AddExternalHttpPrefix($"http://127.0.0.1:{HttpEndPoint}/").
                 WithStatsStorage(StatsStorage.None).Build();
             var started = new ManualResetEvent(false);
+
             Node.MainBus.Subscribe(new AdHocHandler<SystemMessage.BecomeMaster>(m => started.Set()));
             Node.Start();
+
             started.WaitOne();
         }
 

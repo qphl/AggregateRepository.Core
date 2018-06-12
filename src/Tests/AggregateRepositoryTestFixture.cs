@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using CR.AggregateRepository.Core;
 using CR.AggregateRepository.Core.Exceptions;
 using NUnit.Framework;
@@ -10,9 +9,9 @@ namespace CR.AggregateRepository.Tests
     [TestFixture]
     public abstract class AggregateRepositoryTestFixture
     {
-        protected IAggregateRepository _repoUnderTest { get; set; }
+        protected IAggregateRepository RepoUnderTest { get; set; }
 
-        private String _aggregateIdUnderTest;
+        private string _aggregateIdUnderTest;
         private TestAggregate _retrievedAggregate;
         private List<Guid> _storedEvents = new List<Guid>();
 
@@ -28,203 +27,159 @@ namespace CR.AggregateRepository.Tests
         }
 
         [TearDown]
-        public void TearDown()
-        {
-            CleanUpRepository();
-        }
+        public void TearDown() => CleanUpRepository();
 
         [Test]
-        public void Retreiving_an_aggregate_from_an_empty_eventstore_should_throw_an_exception()
-        {
-            Assert.Throws<AggregateNotFoundException>(
-                () => _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest));
-        }
+        public void Retreiving_an_aggregate_from_an_empty_eventstore_should_throw_an_exception() => Assert.Throws<AggregateNotFoundException>(() => RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest));
 
         [Test]
         public void Retreiving_a_nonexistant_aggregate_id_should_throw_an_exception()
         {
-
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
-
-            for (int i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
-                Guid eventId = Guid.NewGuid();
+                var eventId = Guid.NewGuid();
                 _storedEvents.Add(eventId);
                 aggregate.GenerateEvent(eventId);
             }
 
-            _repoUnderTest.Save(aggregate);
-
-            Assert.Throws<AggregateNotFoundException>(
-                () => _repoUnderTest.GetAggregateFromRepository<TestAggregate>(Guid.NewGuid().ToString()));
+            RepoUnderTest.Save(aggregate);
+            Assert.Throws<AggregateNotFoundException>(() => RepoUnderTest.GetAggregateFromRepository<TestAggregate>(Guid.NewGuid().ToString()));
         }
 
         [Test]
         public void Retrieving_a_newly_created_aggregate_reconstructs_the_entity_correctly()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
+            RepoUnderTest.Save(aggregate);
 
-            _repoUnderTest.Save(aggregate);
-
-            _retrievedAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
-
+            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
-
-            Assert.AreEqual(0, _retrievedAggregate.eventsApplied.Count);
+            Assert.AreEqual(0, _retrievedAggregate.EventsApplied.Count);
         }
 
         [Test]
         public void Retrieving_an_aggregate_with_events_reconstructs_the_entity_correctly()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
-
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-                Guid eventId = Guid.NewGuid();
+                var eventId = Guid.NewGuid();
                 _storedEvents.Add(eventId);
                 aggregate.GenerateEvent(eventId);
             }
 
-            _repoUnderTest.Save(aggregate);
-
-            _retrievedAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
+            RepoUnderTest.Save(aggregate);
+            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
 
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
-
-            Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.eventsApplied.Count);
-            foreach (Guid id in _storedEvents)
-                Assert.Contains(id, _retrievedAggregate.eventsApplied);
+            Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.EventsApplied.Count);
+            foreach (var id in _storedEvents) Assert.Contains(id, _retrievedAggregate.EventsApplied);
         }
 
         [Test]
         public void Retrieving_an_aggregate_with_events_when_specifying_a_version_reconstructs_the_entity_correctly()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
-
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-                Guid eventId = Guid.NewGuid();
+                var eventId = Guid.NewGuid();
                 _storedEvents.Add(eventId);
                 aggregate.GenerateEvent(eventId);
             }
 
-            _repoUnderTest.Save(aggregate);
-
-            _retrievedAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 6);
+            RepoUnderTest.Save(aggregate);
+            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 6);
 
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
-
-            Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.eventsApplied.Count);
-            foreach (Guid id in _storedEvents)
-                Assert.Contains(id, _retrievedAggregate.eventsApplied);
+            Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.EventsApplied.Count);
+            foreach (var id in _storedEvents) Assert.Contains(id, _retrievedAggregate.EventsApplied);
         }
 
         [Test]
-        public void
-            Retrieving_an_aggregate_with_events_reconstructs_the_entity_correctly_when_the_event_store_contains_multiple_aggregates
-            ()
+        public void Retrieving_an_aggregate_with_events_reconstructs_the_entity_correctly_when_the_event_store_contains_multiple_aggregates()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
-
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-                Guid eventId = Guid.NewGuid();
+                var eventId = Guid.NewGuid();
                 _storedEvents.Add(eventId);
                 aggregate.GenerateEvent(eventId);
             }
 
-            _repoUnderTest.Save(aggregate);
-
+            RepoUnderTest.Save(aggregate);
             var secondAggregate = new TestAggregate(Guid.NewGuid().ToString());
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
-                Guid eventId = Guid.NewGuid();
+                var eventId = Guid.NewGuid();
                 secondAggregate.GenerateEvent(eventId);
             }
 
-            _repoUnderTest.Save(secondAggregate);
-
-            _retrievedAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
+            RepoUnderTest.Save(secondAggregate);
+            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
 
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
-
-            Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.eventsApplied.Count);
-            foreach (Guid id in _storedEvents)
-                Assert.Contains(id, _retrievedAggregate.eventsApplied);
-
+            Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.EventsApplied.Count);
+            foreach (var id in _storedEvents) Assert.Contains(id, _retrievedAggregate.EventsApplied);
         }
 
         [Test]
         public void Saving_new_events_to_an_existing_aggregate_should_correctly_persist_events()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
-            _repoUnderTest.Save(aggregate);
+            RepoUnderTest.Save(aggregate);
 
-            //retrieve it
-            _retrievedAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
+            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
 
             var eventId = Guid.NewGuid();
             _retrievedAggregate.GenerateEvent(eventId);
-            _repoUnderTest.Save(_retrievedAggregate);
 
-            var actualAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
-            Assert.AreEqual(1, actualAggregate.eventsApplied.Count);
+            RepoUnderTest.Save(_retrievedAggregate);
+            var actualAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
+
+            Assert.AreEqual(1, actualAggregate.EventsApplied.Count);
             Assert.AreEqual(_aggregateIdUnderTest, actualAggregate.Id);
-            Assert.AreEqual(eventId, actualAggregate.eventsApplied[0]);
+            Assert.AreEqual(eventId, actualAggregate.EventsApplied[0]);
         }
 
         [Test]
-        public void
-            Saving_an_aggregate_with_expected_version_less_than_the_actual_version_should_throw_a_concurrency_exception()
+        public void Saving_an_aggregate_with_expected_version_less_than_the_actual_version_should_throw_a_concurrency_exception()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
-
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-                Guid eventId = Guid.NewGuid();
+                var eventId = Guid.NewGuid();
                 _storedEvents.Add(eventId);
                 aggregate.GenerateEvent(eventId);
             }
 
-            _repoUnderTest.Save(aggregate);
+            RepoUnderTest.Save(aggregate);
 
-            //retrieve it
-            _retrievedAggregate = _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 3);
+            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 3);
 
-            //even more events
-
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-                Guid eventId = Guid.NewGuid();
+                var eventId = Guid.NewGuid();
                 _storedEvents.Add(eventId);
                 _retrievedAggregate.GenerateEvent(eventId);
             }
 
-            Assert.Throws<AggregateVersionException>(() => _repoUnderTest.Save(_retrievedAggregate));
-                //this version will be less than actual
-
+            Assert.Throws<AggregateVersionException>(() => RepoUnderTest.Save(_retrievedAggregate));
         }
 
         [Test]
-        public void
-            Retrieving_an_aggregate_with_expected_version_greater_than_the_actual_version_should_throw_a_concurrency_exception
-            ()
+        public void Retrieving_an_aggregate_with_expected_version_greater_than_the_actual_version_should_throw_a_concurrency_exception()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
-
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-                Guid eventId = Guid.NewGuid();
+                var eventId = Guid.NewGuid();
                 _storedEvents.Add(eventId);
                 aggregate.GenerateEvent(eventId);
             }
 
-            _repoUnderTest.Save(aggregate);
-
-            //retrieve it
-            Assert.Throws<AggregateVersionException>(
-                () => _repoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 10));
+            RepoUnderTest.Save(aggregate);
+            Assert.Throws<AggregateVersionException>(() => RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 10));
         }
-
     }
 }
