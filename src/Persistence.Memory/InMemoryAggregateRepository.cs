@@ -45,6 +45,9 @@ namespace CR.AggregateRepository.Persistence.Memory
         }
 
         /// <inheritdoc />
+        /// <exception cref="AggregateNotFoundException">
+        /// Thrown when the provided <see cref="IAggregate"/>'s ID is not found as a key in the <see cref="ConcurrentDictionary{TKey,TValue}"/> used for persistence.
+        /// </exception>
         public void Save(IAggregate aggregateToSave)
         {
             var newEvents = aggregateToSave.GetUncommittedEvents().Cast<object>().ToList();

@@ -31,6 +31,9 @@ namespace CR.AggregateRepository.Persistence.EventStore
         public EventStoreAggregateRepository(IEventStoreConnection connection) => _connection = connection;
 
         /// <inheritdoc />
+        /// <exception cref="AggregateNotFoundException">
+        /// Thrown when the provided <see cref="IAggregate"/>'s ID matches a deleted stream in the EventStore the <see cref="IEventStoreConnection"/> is configured to use.
+        /// </exception>
         public void Save(IAggregate aggregateToSave)
         {
             var newEvents = aggregateToSave.GetUncommittedEvents().Cast<object>().ToList();
