@@ -69,7 +69,7 @@ namespace CR.AggregateRepository.Core
         public void ClearUncommittedEvents() => _changes.Clear();
 
         /// <summary>
-        /// Raises the event that is passed in against the aggredate, applying any necessary changes to keep the aggregate's state up to date.
+        /// Raises the event that is passed in against the aggregate, applying any necessary changes to keep the aggregate's state up to date.
         /// </summary>
         /// <param name="event">Event Data</param>
         protected void RaiseEvent(object @event)

@@ -25,7 +25,7 @@ namespace CR.AggregateRepository.Persistence.EventStore
         private readonly IEventStoreConnection _connection;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventStoreAggregateRepository"/> class using the provided <see cref="IEventStoreConnection"/> to access and save events for an <see cref="IAggregate"/>.
+        /// Initializes a new instance of the <see cref="EventStoreAggregateRepository"/> class using the provided <see cref="IEventStoreConnection"/> to store and retrieve events for an <see cref="IAggregate"/>.
         /// </summary>
         /// <param name="connection">The <see cref="IEventStoreConnection"/> to read from and write to.</param>
         public EventStoreAggregateRepository(IEventStoreConnection connection) => _connection = connection;

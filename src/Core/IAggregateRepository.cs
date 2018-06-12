@@ -16,7 +16,7 @@ namespace CR.AggregateRepository.Core
         /// </summary>
         /// <param name="aggregateToSave">The <see cref="IAggregate"/> to save.</param>
         /// <exception cref="AggregateVersionException">
-        /// Thrown if <see cref="IAggregate.Version"/> does not match the current version in the underlying storage.
+        /// Thrown if <see cref="IAggregate.Version"/> does not match the current version in the underlying storage + the number of new events to commit.
         /// </exception>
         /// <exception cref="AggregateNotFoundException">
         /// See implementation specific documentation for the circumstances in which this may be thrown.
