@@ -7,7 +7,7 @@ namespace CR.AggregateRepository.Core
     using System.Collections;
 
     /// <summary>
-    /// Represents a CQRS aggregate root.
+    /// Represents a CQRS aggregate root which consumes events to build it's state, and creates events to save changes to it's state.
     /// </summary>
     public interface IAggregate
     {
