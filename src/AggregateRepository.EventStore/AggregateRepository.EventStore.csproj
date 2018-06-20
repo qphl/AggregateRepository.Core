@@ -14,6 +14,7 @@
     <PackageIconUrl>https://github.com/cognisant/AggregateRepository.EventStore/blob/master/logo.png</PackageIconUrl>
     <PackageTags>Event Store, Event Sourcing, Aggregate Repository, Cognisant</PackageTags>
     <Product>CR.AggregateRepository</Product>
+    <PackageReleaseNotes>https://GitHub.com/Cognisant/AggregateRepository.EventStore/releases/tag/$(Tag)</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
