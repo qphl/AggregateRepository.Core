@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>CR.AggregateRepository.EventStore</AssemblyName>
+    <RootNamespace>CR.AggregateRepository.EventStore</RootNamespace>
+    <Authors>Cognisant Research</Authors>
+    <Company>Cognisant Research</Company>
+    <Description>EventStore implementation for saving and rebuilding objects from event streams.</Description>
+    <Copyright>Cognisant Research 2018</Copyright>
+    <PackageLicenseUrl>https://github.com/cognisant/AggregateRepository.EventStore/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/cognisant/AggregateRepository.EventStore</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cognisant/AggregateRepository.EventStore</RepositoryUrl>
+    <PackageIconUrl>https://github.com/cognisant/AggregateRepository.EventStore/blob/master/logo.png</PackageIconUrl>
+    <PackageTags>Event Store, Event Sourcing, Aggregate Repository, Cognisant</PackageTags>
+    <Product>CR.AggregateRepository</Product>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard2.0\CR.AggregateRepository.EventStore.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <DocumentationFile>bin\Release\netstandard2.0\CR.AggregateRepository.Persistence.EventStore.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CR.CodeStyle.CSharp.Full" Version="[1.0.1,2.0.0-0)">
+	    <PrivateAssets>All</PrivateAssets>
+	</PackageReference>
+	
+    <PackageReference Include="EventStore.ClientAPI.NetCore" Version="[4.1.0,5.0.0-0)" />
+    <PackageReference Include="Newtonsoft.Json" Version="[11.0.1,12.0.0-0)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AggregateRepository.Core\AggregateRepository.Core.csproj" />
+  </ItemGroup>
+
+</Project>

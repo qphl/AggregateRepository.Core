@@ -5,16 +5,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EBDABA4A-9469-423E-9964-758AE19EB3DF}</ProjectGuid>
+    <ProjectGuid>{6972CC70-3F3B-4CBF-8829-CF61A3EE47E5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CR.AggregateRepository.Tests</RootNamespace>
-    <AssemblyName>CR.AggregateRepository.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RootNamespace>AggregateRepository.EventStore.Tests</RootNamespace>
+    <AssemblyName>AggregateRepository.EventStore.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,6 +23,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,9 +37,11 @@
   <ItemGroup>
     <Reference Include="EventStore.ClientAPI, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EventStore.Client.4.1.1\lib\net40\EventStore.ClientAPI.dll</HintPath>
+      <Aliases>EventStoreNetFrameworkClient</Aliases>
     </Reference>
     <Reference Include="EventStore.ClientAPI.Embedded, Version=4.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EventStore.Client.Embedded.4.1.1\lib\net40\EventStore.ClientAPI.Embedded.dll</HintPath>
+      <Aliases>EventStoreNetFrameworkClient</Aliases>
     </Reference>
     <Reference Include="EventStore.ClientAPI.NetCore, Version=4.1.0.23, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EventStore.ClientAPI.NetCore.4.1.0.23\lib\netstandard2.0\EventStore.ClientAPI.NetCore.dll</HintPath>
@@ -50,14 +53,11 @@
     <Reference Include="nunit.framework, Version=3.10.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.10.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="protobuf-net, Version=2.3.12.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
-      <HintPath>..\packages\protobuf-net.2.3.12\lib\net40\protobuf-net.dll</HintPath>
+    <Reference Include="protobuf-net, Version=2.3.2.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\packages\protobuf-net.2.3.2\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -67,27 +67,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AggregateRepositoryTestFixture.cs" />
-    <Compile Include="ConnectionTranslator.cs" />
     <Compile Include="EmbeddedEventStore.cs" />
     <Compile Include="EventStoreAggregateRepositoryTests.cs" />
-    <Compile Include="InMemoryAggregateRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestAggregate.cs" />
     <Compile Include="TestAggregateCreated.cs" />
     <Compile Include="TestEvent.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj">
-      <Project>{38100303-5D07-4FC1-9094-3F959E669EAC}</Project>
-      <Name>Core</Name>
+    <ProjectReference Include="..\AggregateRepository.Core\AggregateRepository.Core.csproj">
+      <Project>{38100303-5d07-4fc1-9094-3f959e669eac}</Project>
+      <Name>AggregateRepository.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Persistence.EventStore\Persistence.EventStore.csproj">
-      <Project>{F3DAD4AC-69F2-439F-B66C-96C717695FD0}</Project>
-      <Name>Persistence.EventStore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Persistence.Memory\Persistence.Memory.csproj">
-      <Project>{292D6B87-34DA-4674-B64D-FF29947B9D00}</Project>
-      <Name>Persistence.Memory</Name>
+    <ProjectReference Include="..\AggregateRepository.EventStore\AggregateRepository.EventStore.csproj">
+      <Project>{f3dad4ac-69f2-439f-b66c-96c717695fd0}</Project>
+      <Name>AggregateRepository.EventStore</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

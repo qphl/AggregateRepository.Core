@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using CR.AggregateRepository.Core;
-using CR.AggregateRepository.Core.Exceptions;
-using NUnit.Framework;
+﻿// <copyright file="AggregateRepositoryTestFixture.cs" company="Cognisant">
+// Copyright (c) Cognisant. All rights reserved.
+// </copyright>
 
-namespace CR.AggregateRepository.Tests
+namespace AggregateRepository.EventStore.Tests
 {
+    using System;
+    using System.Collections.Generic;
+    using CR.AggregateRepository.Core;
+    using CR.AggregateRepository.Core.Exceptions;
+    using NUnit.Framework;
+
     [TestFixture]
     public abstract class AggregateRepositoryTestFixture
     {
-        protected IAggregateRepository RepoUnderTest { get; set; }
-
-        private string _aggregateIdUnderTest;
-        private TestAggregate _retrievedAggregate;
         private List<Guid> _storedEvents = new List<Guid>();
+        private TestAggregate _retrievedAggregate;
+        private string _aggregateIdUnderTest;
 
-        protected abstract void InitRepository();
-        protected abstract void CleanUpRepository();
+        protected IAggregateRepository RepoUnderTest { get; set; }
 
         [SetUp]
         public void SetUp()
@@ -74,7 +75,10 @@ namespace CR.AggregateRepository.Tests
 
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
             Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.EventsApplied.Count);
-            foreach (var id in _storedEvents) Assert.Contains(id, _retrievedAggregate.EventsApplied);
+            foreach (var id in _storedEvents)
+            {
+                Assert.Contains(id, _retrievedAggregate.EventsApplied);
+            }
         }
 
         [Test]
@@ -93,7 +97,10 @@ namespace CR.AggregateRepository.Tests
 
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
             Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.EventsApplied.Count);
-            foreach (var id in _storedEvents) Assert.Contains(id, _retrievedAggregate.EventsApplied);
+            foreach (var id in _storedEvents)
+            {
+                Assert.Contains(id, _retrievedAggregate.EventsApplied);
+            }
         }
 
         [Test]
@@ -120,7 +127,10 @@ namespace CR.AggregateRepository.Tests
 
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
             Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.EventsApplied.Count);
-            foreach (var id in _storedEvents) Assert.Contains(id, _retrievedAggregate.EventsApplied);
+            foreach (var id in _storedEvents)
+            {
+                Assert.Contains(id, _retrievedAggregate.EventsApplied);
+            }
         }
 
         [Test]
@@ -181,5 +191,9 @@ namespace CR.AggregateRepository.Tests
             RepoUnderTest.Save(aggregate);
             Assert.Throws<AggregateVersionException>(() => RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 10));
         }
+
+        protected abstract void InitRepository();
+
+        protected abstract void CleanUpRepository();
     }
 }

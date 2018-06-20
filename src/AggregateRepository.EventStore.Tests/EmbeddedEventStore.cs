@@ -1,24 +1,31 @@
-﻿using System.Threading;
-using EventStore.ClientAPI.Embedded;
-using EventStore.Core;
-using EventStore.Core.Bus;
-using EventStore.Core.Messages;
-using EventStore.Core.Services.Monitoring;
+﻿// <copyright file="EmbeddedEventStore.cs" company="Cognisant">
+// Copyright (c) Cognisant. All rights reserved.
+// </copyright>
 
-namespace CR.AggregateRepository.Tests
+namespace AggregateRepository.EventStore.Tests
 {
+    extern alias EventStoreNetFrameworkClient;
+
+    using System.Threading;
+    using EventStoreNetFrameworkClient::EventStore.ClientAPI.Embedded;
+    using EventStoreNetFrameworkClient::EventStore.Core;
+    using EventStoreNetFrameworkClient::EventStore.Core.Bus;
+    using EventStoreNetFrameworkClient::EventStore.Core.Messages;
+    using EventStoreNetFrameworkClient::EventStore.Core.Services.Monitoring;
+
     public class EmbeddedEventStore
     {
-        public ClusterVNode Node { get; private set; }
-
-        public int HttpEndPoint { get; }
-        public int TcpEndPoint { get; }
-
         public EmbeddedEventStore(int tcpPort, int httpPort)
         {
             TcpEndPoint = tcpPort;
             HttpEndPoint = httpPort;
         }
+
+        public ClusterVNode Node { get; private set; }
+
+        public int HttpEndPoint { get; }
+
+        public int TcpEndPoint { get; }
 
         public void Start()
         {

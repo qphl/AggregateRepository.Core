@@ -1,9 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using CR.AggregateRepository.Core;
+﻿// <copyright file="TestAggregate.cs" company="Cognisant">
+// Copyright (c) Cognisant. All rights reserved.
+// </copyright>
 
-namespace CR.AggregateRepository.Tests
+namespace AggregateRepository.Core.Tests
 {
+    using System;
+    using System.Collections.Generic;
+    using CR.AggregateRepository.Core;
+
     internal sealed class TestAggregate : AggregateBase
     {
         private object _id;
@@ -11,7 +15,9 @@ namespace CR.AggregateRepository.Tests
         public TestAggregate(string aggregateId) => RaiseEvent(new TestAggregateCreated(aggregateId));
 
         // ReSharper disable once UnusedMember.Local
-        private TestAggregate() { }
+        private TestAggregate()
+        {
+        }
 
         // ReSharper disable once ConvertToAutoPropertyWithPrivateSetter
         public override object Id => _id;
@@ -21,7 +27,7 @@ namespace CR.AggregateRepository.Tests
         protected override EventMap Map => new EventMap
         {
             [typeof(TestEvent)] = e => Apply((TestEvent)e),
-            [typeof(TestAggregateCreated)] = e => Apply((TestAggregateCreated)e)
+            [typeof(TestAggregateCreated)] = e => Apply((TestAggregateCreated)e),
         };
 
         public void Apply(TestEvent e) => EventsApplied.Add(e.EventId);

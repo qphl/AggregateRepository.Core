@@ -2,7 +2,7 @@
 // Copyright (c) Cognisant. All rights reserved.
 // </copyright>
 
-namespace CR.AggregateRepository.Persistence.EventStore
+namespace CR.AggregateRepository.EventStore
 {
     using System;
     using System.Linq;
