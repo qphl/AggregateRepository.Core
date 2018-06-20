@@ -14,6 +14,7 @@
     <Company>Cognisant Research</Company>
     <Authors>Cognisant Research</Authors>
     <Product>CR.AggregateRepository</Product>
+    <PackageReleaseNotes>https://GitHub.com/Cognisant/AggregateRepository.Core/releases/tag/$(Tag)</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
