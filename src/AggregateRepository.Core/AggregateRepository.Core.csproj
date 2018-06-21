@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>CR.AggregateRepository.Core</AssemblyName>
+    <RootNamespace>CR.AggregateRepository.Core</RootNamespace>
+    <Copyright>Cognisant Research 2018</Copyright>
+    <PackageIconUrl>https://github.com/cognisant/AggregateRepository.Core/blob/master/logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/cognisant/AggregateRepository.Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cognisant/AggregateRepository.Core</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/cognisant/AggregateRepository.Core/blob/master/LICENSE</PackageLicenseUrl>
+    <Description>Common Library for saving and rebuilding objects from event streams.</Description>
+    <PackageTags>Event Sourcing, Aggregate Repository, Cognisant</PackageTags>
+    <Company>Cognisant Research</Company>
+    <Authors>Cognisant Research</Authors>
+    <Product>CR.AggregateRepository</Product>
+    <PackageReleaseNotes>https://GitHub.com/Cognisant/AggregateRepository.Core/releases/tag/$(Tag)</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <DocumentationFile>bin\Debug\netstandard2.0\CR.AggregateRepository.Core.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\CR.AggregateRepository.Core.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CR.CodeStyle.CSharp.Full" Version="[1.0.1,2.0.0-0)">
+	    <PrivateAssets>All</PrivateAssets>
+	</PackageReference>
+  </ItemGroup>
+
+</Project>
