@@ -4,15 +4,17 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>CR.AggregateRepository.Core</AssemblyName>
     <RootNamespace>CR.AggregateRepository.Core</RootNamespace>
-    <Copyright>Cognisant 2018</Copyright>
-    <PackageIconUrl>https://github.com/cognisant/cr-aggregaterepository/blob/master/logo.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/cognisant/cr-aggregaterepository</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/cognisant/cr-aggregaterepository</RepositoryUrl>
-    <PackageLicenseUrl>https://github.com/cognisant/cr-aggregaterepository/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright>Cognisant Research 2018</Copyright>
+    <PackageIconUrl>https://github.com/cognisant/AggregateRepository.Core/blob/master/logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/cognisant/AggregateRepository.Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cognisant/AggregateRepository.Core</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/cognisant/AggregateRepository.Core/blob/master/LICENSE</PackageLicenseUrl>
     <Description>Common Library for saving and rebuilding objects from event streams.</Description>
     <PackageTags>Event Sourcing, Aggregate Repository, Cognisant</PackageTags>
-    <Company>Cognisant</Company>
-    <Authors>Cognisant</Authors>
+    <Company>Cognisant Research</Company>
+    <Authors>Cognisant Research</Authors>
+    <Product>CR.AggregateRepository</Product>
+    <PackageReleaseNotes>https://GitHub.com/Cognisant/AggregateRepository.Core/releases/tag/$(Tag)</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -28,7 +30,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CR.CodeStyle.CSharp.Full" Version="1.0.1" />
+    <PackageReference Include="CR.CodeStyle.CSharp.Full" Version="[1.0.1,2.0.0-0)">
+	    <PrivateAssets>All</PrivateAssets>
+	</PackageReference>
   </ItemGroup>
 
 </Project>

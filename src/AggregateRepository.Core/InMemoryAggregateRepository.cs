@@ -2,14 +2,13 @@
 // Copyright (c) Cognisant. All rights reserved.
 // </copyright>
 
-namespace CR.AggregateRepository.Persistence.Memory
+namespace CR.AggregateRepository.Core
 {
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using Core;
-    using Core.Exceptions;
+    using Exceptions;
 
     /// <inheritdoc />
     /// <summary>
