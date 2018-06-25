@@ -5,7 +5,7 @@
     <AssemblyName>CR.AggregateRepository.Core</AssemblyName>
     <RootNamespace>CR.AggregateRepository.Core</RootNamespace>
     <Copyright>Cognisant Research 2018</Copyright>
-    <PackageIconUrl>https://github.com/cognisant/AggregateRepository.Core/blob/master/logo.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/cognisant/AggregateRepository.Core/master/logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/cognisant/AggregateRepository.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/cognisant/AggregateRepository.Core</RepositoryUrl>
     <PackageLicenseUrl>https://github.com/cognisant/AggregateRepository.Core/blob/master/LICENSE</PackageLicenseUrl>
