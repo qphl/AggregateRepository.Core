@@ -1,5 +1,5 @@
-﻿// <copyright file="TestEvent.cs" company="Cognisant">
-// Copyright (c) Cognisant. All rights reserved.
+﻿// <copyright file="TestEvent.cs" company="Corsham Science">
+// Copyright (c) Corsham Science. All rights reserved.
 // </copyright>
 
 namespace AggregateRepository.Core.Tests

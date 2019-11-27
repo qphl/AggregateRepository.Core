@@ -1,8 +1,8 @@
-﻿// <copyright file="AggregateVersionException.cs" company="Cognisant">
-// Copyright (c) Cognisant. All rights reserved.
+﻿// <copyright file="AggregateVersionException.cs" company="Corsham Science">
+// Copyright (c) Corsham Science. All rights reserved.
 // </copyright>
 
-namespace CR.AggregateRepository.Core.Exceptions
+namespace CorshamScience.AggregateRepository.Core.Exceptions
 {
     using System;
     using System.Runtime.Serialization;
