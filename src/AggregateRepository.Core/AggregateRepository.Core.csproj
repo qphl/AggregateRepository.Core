@@ -16,6 +16,7 @@
     <Product>CorshamScience.AggregateRepository</Product>
     <PackageReleaseNotes>https://GitHub.com/QPHL/AggregateRepository.Core/releases/tag/$(Tag)</PackageReleaseNotes>
     <License>BSD-3-Clause</License>
+    <Icon>Logo.png</Icon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
