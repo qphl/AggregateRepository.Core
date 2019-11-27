@@ -10,11 +10,12 @@
     <RepositoryUrl>https://github.com/qphl/AggregateRepository.Core</RepositoryUrl>
     <PackageLicenseUrl>https://github.com/qphl/AggregateRepository.Core/blob/master/LICENSE</PackageLicenseUrl>
     <Description>Common Library for saving and rebuilding objects from event streams.</Description>
-    <PackageTags>Event Sourcing, Aggregate Repository, Corsham, Science, Corsham Science</PackageTags>
+    <PackageTags>Event Sourcing, Event, Sourcing, Aggregate, Repository, Aggregate Repository, Corsham, Science, Corsham Science</PackageTags>
     <Company>Corsham Science</Company>
     <Authors>Corsham Science</Authors>
     <Product>CorshamScience.AggregateRepository</Product>
     <PackageReleaseNotes>https://GitHub.com/QPHL/AggregateRepository.Core/releases/tag/$(Tag)</PackageReleaseNotes>
+    <License>BSD-3-Clause</License>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
