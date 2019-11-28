@@ -71,7 +71,7 @@ namespace CorshamScience.AggregateRepository.Core
         /// <summary>
         /// Raises the event that is passed in against the aggregate, applying any necessary changes to keep the aggregate's state up to date.
         /// </summary>
-        /// <param name="event">Event Data</param>
+        /// <param name="event">Event Data.</param>
         protected void RaiseEvent(object @event)
         {
             ApplyEvent(@event);

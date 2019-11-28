@@ -4,7 +4,7 @@
 
 namespace CorshamScience.AggregateRepository.Core
 {
-    using Exceptions;
+    using CorshamScience.AggregateRepository.Core.Exceptions;
 
     /// <summary>
     /// Represents a method of persisting instances of <see cref="IAggregate"/>, handling both storage and access.

@@ -8,7 +8,7 @@ namespace CorshamScience.AggregateRepository.Core
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using Exceptions;
+    using CorshamScience.AggregateRepository.Core.Exceptions;
 
     /// <inheritdoc />
     /// <summary>
