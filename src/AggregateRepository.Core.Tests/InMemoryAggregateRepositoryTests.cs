@@ -1,10 +1,10 @@
-﻿// <copyright file="InMemoryAggregateRepositoryTests.cs" company="Cognisant">
-// Copyright (c) Cognisant. All rights reserved.
+﻿// <copyright file="InMemoryAggregateRepositoryTests.cs" company="Corsham Science">
+// Copyright (c) Corsham Science. All rights reserved.
 // </copyright>
 
 namespace AggregateRepository.Core.Tests
 {
-    using CR.AggregateRepository.Core;
+    using CorshamScience.AggregateRepository.Core;
 
     public class InMemoryAggregateRepositoryTests : AggregateRepositoryTestFixture
     {

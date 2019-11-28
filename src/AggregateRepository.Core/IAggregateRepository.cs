@@ -1,10 +1,10 @@
-﻿// <copyright file="IAggregateRepository.cs" company="Cognisant">
-// Copyright (c) Cognisant. All rights reserved.
+﻿// <copyright file="IAggregateRepository.cs" company="Corsham Science">
+// Copyright (c) Corsham Science. All rights reserved.
 // </copyright>
 
-namespace CR.AggregateRepository.Core
+namespace CorshamScience.AggregateRepository.Core
 {
-    using Exceptions;
+    using CorshamScience.AggregateRepository.Core.Exceptions;
 
     /// <summary>
     /// Represents a method of persisting instances of <see cref="IAggregate"/>, handling both storage and access.

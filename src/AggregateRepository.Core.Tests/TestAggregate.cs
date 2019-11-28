@@ -1,12 +1,12 @@
-﻿// <copyright file="TestAggregate.cs" company="Cognisant">
-// Copyright (c) Cognisant. All rights reserved.
+﻿// <copyright file="TestAggregate.cs" company="Corsham Science">
+// Copyright (c) Corsham Science. All rights reserved.
 // </copyright>
 
 namespace AggregateRepository.Core.Tests
 {
     using System;
     using System.Collections.Generic;
-    using CR.AggregateRepository.Core;
+    using CorshamScience.AggregateRepository.Core;
 
     internal sealed class TestAggregate : AggregateBase
     {

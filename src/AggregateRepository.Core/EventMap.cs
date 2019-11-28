@@ -1,8 +1,8 @@
-﻿// <copyright file="EventMap.cs" company="Cognisant">
-// Copyright (c) Cognisant. All rights reserved.
+﻿// <copyright file="EventMap.cs" company="Corsham Science">
+// Copyright (c) Corsham Science. All rights reserved.
 // </copyright>
 
-namespace CR.AggregateRepository.Core
+namespace CorshamScience.AggregateRepository.Core
 {
     using System;
     using System.Collections.Generic;

@@ -1,13 +1,13 @@
-﻿// <copyright file="AggregateRepositoryTestFixture.cs" company="Cognisant">
-// Copyright (c) Cognisant. All rights reserved.
+﻿// <copyright file="AggregateRepositoryTestFixture.cs" company="Corsham Science">
+// Copyright (c) Corsham Science. All rights reserved.
 // </copyright>
 
 namespace AggregateRepository.Core.Tests
 {
     using System;
     using System.Collections.Generic;
-    using CR.AggregateRepository.Core;
-    using CR.AggregateRepository.Core.Exceptions;
+    using CorshamScience.AggregateRepository.Core;
+    using CorshamScience.AggregateRepository.Core.Exceptions;
     using NUnit.Framework;
 
     [TestFixture]

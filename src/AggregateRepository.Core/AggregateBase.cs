@@ -1,8 +1,8 @@
-﻿// <copyright file="AggregateBase.cs" company="Cognisant">
-// Copyright (c) Cognisant. All rights reserved.
+﻿// <copyright file="AggregateBase.cs" company="Corsham Science">
+// Copyright (c) Corsham Science. All rights reserved.
 // </copyright>
 
-namespace CR.AggregateRepository.Core
+namespace CorshamScience.AggregateRepository.Core
 {
     using System;
     using System.Collections;
@@ -71,7 +71,7 @@ namespace CR.AggregateRepository.Core
         /// <summary>
         /// Raises the event that is passed in against the aggregate, applying any necessary changes to keep the aggregate's state up to date.
         /// </summary>
-        /// <param name="event">Event Data</param>
+        /// <param name="event">Event Data.</param>
         protected void RaiseEvent(object @event)
         {
             ApplyEvent(@event);
