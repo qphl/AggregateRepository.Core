@@ -10,4 +10,4 @@ SET TAG=%TAG:tags/=%
 dotnet test .\src\AggregateRepository.Core.Tests\AggregateRepository.Core.Tests.csproj
 if %errorlevel% neq 0 exit /b %errorlevel%
 
-dotnet pack .\src\AggregateRepository.Core\AggregateRepository.Core.csproj -o ..\..\dist -p:Version="%VERSION%" -p:PackageVersion="%VERSION%" -p:Tag="%TAG%" -c Release
+dotnet pack .\src\AggregateRepository.Core\AggregateRepository.Core.csproj -o .\dist -p:Version="%VERSION%" -p:PackageVersion="%VERSION%" -p:Tag="%TAG%" -c Release
