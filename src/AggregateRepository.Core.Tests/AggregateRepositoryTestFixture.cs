@@ -6,6 +6,7 @@ namespace AggregateRepository.Core.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using CorshamScience.AggregateRepository.Core;
     using CorshamScience.AggregateRepository.Core.Exceptions;
     using NUnit.Framework;
@@ -20,21 +21,21 @@ namespace AggregateRepository.Core.Tests
         protected IAggregateRepository RepoUnderTest { get; set; }
 
         [SetUp]
-        public void SetUp()
+        public async Task SetUp()
         {
-            InitRepository();
+            await InitRepository();
             _aggregateIdUnderTest = Guid.NewGuid().ToString();
             _storedEvents = new List<Guid>();
         }
 
         [TearDown]
-        public void TearDown() => CleanUpRepository();
+        public async Task TearDown() => await CleanUpRepository();
 
         [Test]
-        public void Retreiving_an_aggregate_from_an_empty_eventstore_should_throw_an_exception() => Assert.Throws<AggregateNotFoundException>(() => RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest));
+        public void Retreiving_an_aggregate_from_an_empty_eventstore_should_throw_an_exception() => Assert.ThrowsAsync<AggregateNotFoundException>(async () => await RepoUnderTest.GetAggregateAsync<TestAggregate>(_aggregateIdUnderTest));
 
         [Test]
-        public void Retreiving_a_nonexistant_aggregate_id_should_throw_an_exception()
+        public async Task Retreiving_a_nonexistant_aggregate_id_should_throw_an_exception()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
             for (var i = 0; i < 2; i++)
@@ -44,23 +45,23 @@ namespace AggregateRepository.Core.Tests
                 aggregate.GenerateEvent(eventId);
             }
 
-            RepoUnderTest.Save(aggregate);
-            Assert.Throws<AggregateNotFoundException>(() => RepoUnderTest.GetAggregateFromRepository<TestAggregate>(Guid.NewGuid().ToString()));
+            await RepoUnderTest.SaveAsync(aggregate);
+            Assert.ThrowsAsync<AggregateNotFoundException>(async () => await RepoUnderTest.GetAggregateAsync<TestAggregate>(Guid.NewGuid().ToString()));
         }
 
         [Test]
-        public void Retrieving_a_newly_created_aggregate_reconstructs_the_entity_correctly()
+        public async Task Retrieving_a_newly_created_aggregate_reconstructs_the_entity_correctly()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
-            RepoUnderTest.Save(aggregate);
+            await RepoUnderTest.SaveAsync(aggregate);
 
-            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
+            _retrievedAggregate = await RepoUnderTest.GetAggregateAsync<TestAggregate>(_aggregateIdUnderTest);
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
             Assert.AreEqual(0, _retrievedAggregate.EventsApplied.Count);
         }
 
         [Test]
-        public void Retrieving_an_aggregate_with_events_reconstructs_the_entity_correctly()
+        public async Task Retrieving_an_aggregate_with_events_reconstructs_the_entity_correctly()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
             for (var i = 0; i < 5; i++)
@@ -70,8 +71,8 @@ namespace AggregateRepository.Core.Tests
                 aggregate.GenerateEvent(eventId);
             }
 
-            RepoUnderTest.Save(aggregate);
-            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
+            await RepoUnderTest.SaveAsync(aggregate);
+            _retrievedAggregate = await RepoUnderTest.GetAggregateAsync<TestAggregate>(_aggregateIdUnderTest);
 
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
             Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.EventsApplied.Count);
@@ -82,7 +83,7 @@ namespace AggregateRepository.Core.Tests
         }
 
         [Test]
-        public void Retrieving_an_aggregate_with_events_when_specifying_a_version_reconstructs_the_entity_correctly()
+        public async Task Retrieving_an_aggregate_with_events_when_specifying_a_version_reconstructs_the_entity_correctly()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
             for (var i = 0; i < 5; i++)
@@ -92,8 +93,8 @@ namespace AggregateRepository.Core.Tests
                 aggregate.GenerateEvent(eventId);
             }
 
-            RepoUnderTest.Save(aggregate);
-            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 6);
+            await RepoUnderTest.SaveAsync(aggregate);
+            _retrievedAggregate = await RepoUnderTest.GetAggregateAsync<TestAggregate>(_aggregateIdUnderTest, 6);
 
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
             Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.EventsApplied.Count);
@@ -104,7 +105,7 @@ namespace AggregateRepository.Core.Tests
         }
 
         [Test]
-        public void Retrieving_an_aggregate_with_events_reconstructs_the_entity_correctly_when_the_event_store_contains_multiple_aggregates()
+        public async Task Retrieving_an_aggregate_with_events_reconstructs_the_entity_correctly_when_the_event_store_contains_multiple_aggregates()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
             for (var i = 0; i < 5; i++)
@@ -114,7 +115,7 @@ namespace AggregateRepository.Core.Tests
                 aggregate.GenerateEvent(eventId);
             }
 
-            RepoUnderTest.Save(aggregate);
+            await RepoUnderTest.SaveAsync(aggregate);
             var secondAggregate = new TestAggregate(Guid.NewGuid().ToString());
             for (var i = 0; i < 6; i++)
             {
@@ -122,8 +123,8 @@ namespace AggregateRepository.Core.Tests
                 secondAggregate.GenerateEvent(eventId);
             }
 
-            RepoUnderTest.Save(secondAggregate);
-            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
+            await RepoUnderTest.SaveAsync(secondAggregate);
+            _retrievedAggregate = await RepoUnderTest.GetAggregateAsync<TestAggregate>(_aggregateIdUnderTest);
 
             Assert.AreEqual(_aggregateIdUnderTest, _retrievedAggregate.Id);
             Assert.AreEqual(_storedEvents.Count, _retrievedAggregate.EventsApplied.Count);
@@ -134,18 +135,18 @@ namespace AggregateRepository.Core.Tests
         }
 
         [Test]
-        public void Saving_new_events_to_an_existing_aggregate_should_correctly_persist_events()
+        public async Task Saving_new_events_to_an_existing_aggregate_should_correctly_persist_events()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
-            RepoUnderTest.Save(aggregate);
+            await RepoUnderTest.SaveAsync(aggregate);
 
-            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
+            _retrievedAggregate = await RepoUnderTest.GetAggregateAsync<TestAggregate>(_aggregateIdUnderTest);
 
             var eventId = Guid.NewGuid();
             _retrievedAggregate.GenerateEvent(eventId);
 
-            RepoUnderTest.Save(_retrievedAggregate);
-            var actualAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest);
+            await RepoUnderTest.SaveAsync(_retrievedAggregate);
+            var actualAggregate = await RepoUnderTest.GetAggregateAsync<TestAggregate>(_aggregateIdUnderTest);
 
             Assert.AreEqual(1, actualAggregate.EventsApplied.Count);
             Assert.AreEqual(_aggregateIdUnderTest, actualAggregate.Id);
@@ -153,7 +154,7 @@ namespace AggregateRepository.Core.Tests
         }
 
         [Test]
-        public void Saving_an_aggregate_with_expected_version_less_than_the_actual_version_should_throw_a_concurrency_exception()
+        public async Task Saving_an_aggregate_with_expected_version_less_than_the_actual_version_should_throw_a_concurrency_exception()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
             for (var i = 0; i < 5; i++)
@@ -163,9 +164,9 @@ namespace AggregateRepository.Core.Tests
                 aggregate.GenerateEvent(eventId);
             }
 
-            RepoUnderTest.Save(aggregate);
+            await RepoUnderTest.SaveAsync(aggregate);
 
-            _retrievedAggregate = RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 3);
+            _retrievedAggregate = await RepoUnderTest.GetAggregateAsync<TestAggregate>(_aggregateIdUnderTest, 3);
 
             for (var i = 0; i < 5; i++)
             {
@@ -174,11 +175,11 @@ namespace AggregateRepository.Core.Tests
                 _retrievedAggregate.GenerateEvent(eventId);
             }
 
-            Assert.Throws<AggregateVersionException>(() => RepoUnderTest.Save(_retrievedAggregate));
+            Assert.ThrowsAsync<AggregateVersionException>(async () => await RepoUnderTest.SaveAsync(_retrievedAggregate));
         }
 
         [Test]
-        public void Retrieving_an_aggregate_with_expected_version_greater_than_the_actual_version_should_throw_a_concurrency_exception()
+        public async Task Retrieving_an_aggregate_with_expected_version_greater_than_the_actual_version_should_throw_a_concurrency_exception()
         {
             var aggregate = new TestAggregate(_aggregateIdUnderTest);
             for (var i = 0; i < 5; i++)
@@ -188,12 +189,12 @@ namespace AggregateRepository.Core.Tests
                 aggregate.GenerateEvent(eventId);
             }
 
-            RepoUnderTest.Save(aggregate);
-            Assert.Throws<AggregateVersionException>(() => RepoUnderTest.GetAggregateFromRepository<TestAggregate>(_aggregateIdUnderTest, 10));
+            await RepoUnderTest.SaveAsync(aggregate);
+            Assert.ThrowsAsync<AggregateVersionException>(async () => await RepoUnderTest.GetAggregateAsync<TestAggregate>(_aggregateIdUnderTest, 10));
         }
 
-        protected abstract void InitRepository();
+        protected abstract Task InitRepository();
 
-        protected abstract void CleanUpRepository();
+        protected abstract Task CleanUpRepository();
     }
 }

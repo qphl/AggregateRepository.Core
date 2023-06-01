@@ -4,6 +4,7 @@
 
 namespace CorshamScience.AggregateRepository.Core
 {
+    using System.Threading.Tasks;
     using CorshamScience.AggregateRepository.Core.Exceptions;
 
     /// <summary>
@@ -21,7 +22,8 @@ namespace CorshamScience.AggregateRepository.Core
         /// <exception cref="AggregateNotFoundException">
         /// See implementation specific documentation for the circumstances in which this may be thrown.
         /// </exception>
-        void Save(IAggregate aggregateToSave);
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task SaveAsync(IAggregate aggregateToSave);
 
         /// <summary>
         /// Rehydrates an aggregate of the specified type from events in the underlying storage.
@@ -35,7 +37,7 @@ namespace CorshamScience.AggregateRepository.Core
         /// Returns an aggregate instance which has had historic events passed to its
         /// <see cref="IAggregate.ApplyEvent"/> method.
         /// </returns>
-        T GetAggregateFromRepository<T>(object aggregateId, int version = int.MaxValue)
+        Task<T> GetAggregateAsync<T>(object aggregateId, int version = int.MaxValue)
             where T : IAggregate;
     }
 }

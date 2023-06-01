@@ -8,6 +8,7 @@ namespace CorshamScience.AggregateRepository.Core
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using CorshamScience.AggregateRepository.Core.Exceptions;
 
     /// <inheritdoc />
@@ -47,7 +48,7 @@ namespace CorshamScience.AggregateRepository.Core
         /// <exception cref="AggregateNotFoundException">
         /// Thrown when the provided <see cref="IAggregate"/>'s ID is not found as a key in the <see cref="ConcurrentDictionary{TKey,TValue}"/> used for persistence.
         /// </exception>
-        public void Save(IAggregate aggregateToSave)
+        public Task SaveAsync(IAggregate aggregateToSave)
         {
             var newEvents = aggregateToSave.GetUncommittedEvents().Cast<object>().ToList();
             var originalVersion = aggregateToSave.Version - newEvents.Count;
@@ -74,10 +75,12 @@ namespace CorshamScience.AggregateRepository.Core
             {
                 throw new AggregateNotFoundException();
             }
+
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc />
-        public T GetAggregateFromRepository<T>(object aggregateId, int version = int.MaxValue)
+        public Task<T> GetAggregateAsync<T>(object aggregateId, int version = int.MaxValue)
             where T : IAggregate
         {
             if (version <= 0)
@@ -95,7 +98,8 @@ namespace CorshamScience.AggregateRepository.Core
                 throw new AggregateVersionException();
             }
 
-            return BuildAggregate<T>(theEvents.Take(version));
+            var aggregate = BuildAggregate<T>(theEvents.Take(version));
+            return Task.FromResult(aggregate);
         }
 
         private static T BuildAggregate<T>(IEnumerable<object> events)
